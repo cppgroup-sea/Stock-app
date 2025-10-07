@@ -19,8 +19,6 @@
       .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
       #submitButton { grid-column: 1 / -1; }
       .radio-group { display: flex; gap: 2rem; margin-bottom: 1rem; }
-      
-      /* Style for Choices.js dropdown */
       .choices__inner { background-color: white; }
       .choices__list--dropdown { background-color: white; }
     </style>
@@ -63,14 +61,12 @@
       // !=====================================================================!
 
       const loggedInUser = sessionStorage.getItem('stockUser');
-      let productChoices; // To hold the Choices.js instance
+      let productChoices;
 
-      // If not logged in, redirect to login page
       if (!loggedInUser) {
         window.location.href = 'index.html';
       }
 
-      // Generic function to call our API
       async function callApi(action, payload = {}) {
         const response = await fetch(API_URL, {
             method: 'POST',
@@ -105,22 +101,19 @@
         productChoices.setChoices(choicesData, 'value', 'label', true);
       }
       
-      // ========================= FIX STARTS HERE =========================
-      // Use the 'changeChoice' event provided by Choices.js
-      document.getElementById('productName').addEventListener('changeChoice', function(event) {
-          // The selected choice details are in event.detail.choice
+      // ========================= FINAL FIX STARTS HERE =========================
+      // The correct event name is 'choice', not 'changeChoice'
+      document.getElementById('productName').addEventListener('choice', function(event) {
           if (event.detail.choice && event.detail.choice.customProperties) {
               const props = event.detail.choice.customProperties;
               document.getElementById('productID').value = props.id || '';
               document.getElementById('unit').value = props.unit || '';
           } else {
-              // Clear fields if the choice is cleared
               document.getElementById('productID').value = '';
               document.getElementById('unit').value = '';
           }
       }, false);
-      // ========================== FIX ENDS HERE ==========================
-
+      // ========================== FINAL FIX ENDS HERE ==========================
 
       document.getElementById('stockForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -168,45 +161,6 @@
           alert('ไม่สามารถโหลดรายการสินค้าได้ กรุณาลองอีกครั้ง');
         }
       });
-        function populateProducts(products) {
-    const selectElement = document.getElementById('productName');
-    
-    productChoices = new Choices(selectElement, {
-        searchEnabled: true,
-        itemSelectText: 'กดเพื่อเลือก',
-        removeItemButton: false,
-        placeholder: true,
-        placeholderValue: '-- กรุณาเลือกสินค้า --'
-    });
-    
-    const choicesData = products.map(product => ({
-        value: product.name,
-        label: `${product.id} - ${product.name}`,
-        customProperties: {
-            id: product.id,
-            unit: product.unit
-        }
-    }));
-
-    // DEBUG บรรทัดที่ 1: แสดงข้อมูลทั้งหมดที่กำลังจะถูกใส่ใน Dropdown
-    console.log("Data being sent to Choices.js:", choicesData);
-
-    productChoices.setChoices(choicesData, 'value', 'label', true);
-}
-        document.getElementById('productName').addEventListener('changeChoice', function(event) {
-    // DEBUG บรรทัดที่ 2: แสดงข้อมูลของไอเท็มที่ถูกเลือก
-    console.log("Choice event triggered. Event detail:", event.detail);
-
-    if (event.detail.choice && event.detail.choice.customProperties) {
-        const props = event.detail.choice.customProperties;
-        document.getElementById('productID').value = props.id || '';
-        document.getElementById('unit').value = props.unit || '';
-    } else {
-        document.getElementById('productID').value = '';
-        document.getElementById('unit').value = '';
-    }
-}, false);
     </script>
 </body>
 </html>
-

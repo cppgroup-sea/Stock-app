@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการสต๊อก</title>
+    <base target="_top">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+      body { background-color: #f3f4f6; }
+      nav { display: flex; justify-content: space-between; align-items: center; padding: 0 1rem; }
+      main.container { padding-top: 2rem; }
+      article { padding: 2rem; }
+      .grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+      #submitButton { grid-column: 1 / -1; }
+      .radio-group { display: flex; gap: 2rem; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <nav class="container-fluid">
+      <ul><li><strong>ระบบจัดการสต๊อก</strong></li></ul>
+      <ul><li><a href="#" role="button" class="secondary" id="logoutButton">ออกจากระบบ</a></li></ul>
+    </nav>
+    
+    <main class="container">
+      <article>
+        <h3 id="welcomeMessage"></h3>
+        <form id="stockForm">
+          <label for="productName">รายการสินค้า</label>
+          <select id="productName" name="productName" required>
+            <option value="" selected>กำลังโหลดรายการสินค้า...</option>
+          </select>
+          <div class="grid">
+            <label for="productID">รหัสสินค้า<input type="text" id="productID" name="productID" readonly></label>
+            <label for="lot">ล๊อต (Lot)<input type="text" id="lot" name="lot" required></label>
+          </div>
+          <div class="grid">
+            <label for="quantity">จำนวน<input type="number" id="quantity" name="quantity" step="any" required></label>
+            <label for="unit">หน่วย<input type="text" id="unit" name="unit" readonly></label>
+          </div>
+          <fieldset class="radio-group">
+            <label for="type-in"><input type="radio" id="type-in" name="type" value="รับเข้า" checked> รับเข้า</label>
+            <label for="type-out"><input type="radio" id="type-out" name="type" value="ตัดออก"> ตัดออก</label>
+          </fieldset>
+          <button type="submit" id="submitButton">บันทึกรายการ</button>
+        </form>
+      </article>
+    </main>
+
+    <script>
+      // !================== PASTE YOUR APPS SCRIPT URL HERE ==================!
+      const API_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
+      // !=====================================================================!
+
+      const loggedInUser = sessionStorage.getItem('stockUser');
+
+      // ถ้าไม่ได้ล็อกอิน ให้เด้งกลับไปหน้าแรก
+      if (!loggedInUser) {
+        window.location.href = 'index.html';
+      }
+
+      // ฟังก์ชันกลางสำหรับเรียก API
+      async function callApi(action, payload = {}) {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {'Content-Type': 'text/plain;charset=utf-8'},
+            body: JSON.stringify({ action, payload, user: loggedInUser })
+        });
+        const result = await response.json();
+        if (result.status === 'error') throw new Error(result.message);
+        return result.data;
+      }
+      
+      function populateProducts(products) {
+        const select = document.getElementById('productName');
+        select.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกสินค้า --</option>';
+        products.forEach(product => {
+          const option = document.createElement('option');
+          option.value = product.name;
+          option.textContent = `${product.id} - ${product.name}`;
+          option.dataset.id = product.id;
+          option.dataset.unit = product.unit;
+          select.appendChild(option);
+        });
+      }
+
+      document.getElementById('productName').addEventListener('change', function(e) {
+        const selectedOption = e.target.options[e.target.selectedIndex];
+        document.getElementById('productID').value = selectedOption.dataset.id || '';
+        document.getElementById('unit').value = selectedOption.dataset.unit || '';
+      });
+
+      document.getElementById('stockForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitButton = document.getElementById('submitButton');
+        submitButton.setAttribute('aria-busy', 'true');
+        submitButton.textContent = 'กำลังบันทึก...';
+        
+        const formData = {
+          productName: document.getElementById('productName').value,
+          productID: document.getElementById('productID').value,
+          lot: document.getElementById('lot').value,
+          quantity: document.getElementById('quantity').value,
+          unit: document.getElementById('unit').value,
+          type: document.querySelector('input[name="type"]:checked').value
+        };
+        
+        try {
+          const result = await callApi('recordTransaction', formData);
+          alert(result.message);
+          document.getElementById('stockForm').reset();
+          document.getElementById('productID').value = '';
+          document.getElementById('unit').value = '';
+        } catch (error) {
+          alert('เกิดข้อผิดพลาด: ' + error.message);
+        } finally {
+          submitButton.removeAttribute('aria-busy');
+          submitButton.textContent = 'บันทึกรายการ';
+        }
+      });
+      
+      document.getElementById('logoutButton').addEventListener('click', () => {
+        sessionStorage.removeItem('stockUser');
+        window.location.href = 'index.html';
+      });
+
+      window.addEventListener('load', async () => {
+        document.getElementById('welcomeMessage').textContent = `ยินดีต้อนรับ, ${loggedInUser}`;
+        try {
+          const products = await callApi('getProducts');
+          populateProducts(products);
+        } catch (error) {
+          console.error('Failed to load products:', error);
+          alert('ไม่สามารถโหลดรายการสินค้าได้ กรุณาลองอีกครั้ง');
+        }
+      });
+    </script>
+</body>
+</html>

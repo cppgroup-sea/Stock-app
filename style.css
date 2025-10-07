@@ -1,0 +1,43 @@
+:root {
+  --fb-blue: #1877F2;
+  --fb-bg-grey: #F0F2F5;
+  --fb-card-bg: #FFFFFF;
+  --fb-border-color: #DADDE1;
+  --primary: var(--fb-blue);
+}
+
+body {
+  background-color: var(--fb-bg-grey);
+  color: #050505;
+  font-family: sans-serif;
+}
+
+nav.navbar {
+  background-color: var(--fb-card-bg);
+  border-bottom: 1px solid var(--fb-border-color);
+  padding: 0.5rem 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+main.container {
+  padding: 2rem;
+  max-width: 960px;
+}
+
+.card {
+  background-color: var(--fb-card-bg);
+  border: 1px solid var(--fb-border-color);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+table {
+    background-color: var(--fb-card-bg);
+}
+
+.select2-container .select2-selection--single { height: calc(1.5em + 1rem + 2px); padding: 0.5rem; border: 1px solid #c7c7c7; border-radius: 0.25rem;}
+.select2-container--default .select2-selection--single .select2-selection__arrow { height: calc(1.5em + 1rem); }

@@ -5,15 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบจัดการสต๊อก</title>
     <base target="_top">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
+    
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
     <style>
       body { background-color: #f3f4f6; }
       nav { display: flex; justify-content: space-between; align-items: center; padding: 0 1rem; }
-      main.container { padding-top: 2rem; }
+      main.container { padding-top: 2rem; max-width: 800px; }
       article { padding: 2rem; }
-      .grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
       #submitButton { grid-column: 1 / -1; }
       .radio-group { display: flex; gap: 2rem; margin-bottom: 1rem; }
+      
+      /* Style for Choices.js dropdown */
+      .choices__inner { background-color: white; }
+      .choices__list--dropdown { background-color: white; }
     </style>
 </head>
 <body>
@@ -26,10 +35,9 @@
       <article>
         <h3 id="welcomeMessage"></h3>
         <form id="stockForm">
-          <label for="productName">รายการสินค้า</label>
-          <select id="productName" name="productName" required>
-            <option value="" selected>กำลังโหลดรายการสินค้า...</option>
-          </select>
+          <label for="productName">รายการสินค้า (พิมพ์เพื่อค้นหา)</label>
+          <select id="productName" name="productName" required></select>
+          
           <div class="grid">
             <label for="productID">รหัสสินค้า<input type="text" id="productID" name="productID" readonly></label>
             <label for="lot">ล๊อต (Lot)<input type="text" id="lot" name="lot" required></label>
@@ -38,10 +46,12 @@
             <label for="quantity">จำนวน<input type="number" id="quantity" name="quantity" step="any" required></label>
             <label for="unit">หน่วย<input type="text" id="unit" name="unit" readonly></label>
           </div>
+          
           <fieldset class="radio-group">
             <label for="type-in"><input type="radio" id="type-in" name="type" value="รับเข้า" checked> รับเข้า</label>
             <label for="type-out"><input type="radio" id="type-out" name="type" value="ตัดออก"> ตัดออก</label>
           </fieldset>
+
           <button type="submit" id="submitButton">บันทึกรายการ</button>
         </form>
       </article>
@@ -53,13 +63,14 @@
       // !=====================================================================!
 
       const loggedInUser = sessionStorage.getItem('stockUser');
+      let productChoices; // To hold the Choices.js instance
 
-      // ถ้าไม่ได้ล็อกอิน ให้เด้งกลับไปหน้าแรก
+      // If not logged in, redirect to login page
       if (!loggedInUser) {
         window.location.href = 'index.html';
       }
 
-      // ฟังก์ชันกลางสำหรับเรียก API
+      // Generic function to call our API
       async function callApi(action, payload = {}) {
         const response = await fetch(API_URL, {
             method: 'POST',
@@ -72,22 +83,38 @@
       }
       
       function populateProducts(products) {
-        const select = document.getElementById('productName');
-        select.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกสินค้า --</option>';
-        products.forEach(product => {
-          const option = document.createElement('option');
-          option.value = product.name;
-          option.textContent = `${product.id} - ${product.name}`;
-          option.dataset.id = product.id;
-          option.dataset.unit = product.unit;
-          select.appendChild(option);
+        const selectElement = document.getElementById('productName');
+        
+        // Initialize Choices.js
+        productChoices = new Choices(selectElement, {
+            searchEnabled: true,
+            itemSelectText: 'กดเพื่อเลือก',
+            removeItemButton: false,
+            placeholder: true,
+            placeholderValue: '-- กรุณาเลือกสินค้า --'
         });
+        
+        // Prepare data in the format Choices.js needs
+        const choicesData = products.map(product => ({
+            value: product.name,
+            label: `${product.id} - ${product.name}`,
+            customProperties: {
+                id: product.id,
+                unit: product.unit
+            }
+        }));
+
+        // Set the choices in the dropdown
+        productChoices.setChoices(choicesData, 'value', 'label', true);
       }
 
       document.getElementById('productName').addEventListener('change', function(e) {
-        const selectedOption = e.target.options[e.target.selectedIndex];
-        document.getElementById('productID').value = selectedOption.dataset.id || '';
-        document.getElementById('unit').value = selectedOption.dataset.unit || '';
+        if (!productChoices) return;
+        const selectedValue = productChoices.getValue(true);
+        const selectedData = selectedValue ? selectedValue.customProperties : null;
+        
+        document.getElementById('productID').value = selectedData ? selectedData.id : '';
+        document.getElementById('unit').value = selectedData ? selectedData.unit : '';
       });
 
       document.getElementById('stockForm').addEventListener('submit', async (e) => {
@@ -111,6 +138,9 @@
           document.getElementById('stockForm').reset();
           document.getElementById('productID').value = '';
           document.getElementById('unit').value = '';
+          // Clear the selection in Choices.js and reset it
+          productChoices.clearStore();
+          productChoices.setChoiceByValue('');
         } catch (error) {
           alert('เกิดข้อผิดพลาด: ' + error.message);
         } finally {
@@ -136,5 +166,4 @@
       });
     </script>
 </body>
-
 </html>

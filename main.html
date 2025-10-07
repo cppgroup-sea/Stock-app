@@ -7,12 +7,9 @@
     <base target="_top">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
-    
-    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <style>
-      /* CSS styles remain the same */
       body { background-color: #f3f4f6; }
       nav { display: flex; justify-content: space-between; align-items: center; padding: 0 1rem; }
       main.container { padding-top: 2rem; max-width: 800px; }
@@ -20,8 +17,9 @@
       .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
       #submitButton { grid-column: 1 / -1; }
       .radio-group { display: flex; gap: 2rem; margin-bottom: 1rem; }
-      .choices__inner { background-color: white; }
-      .choices__list--dropdown { background-color: white; }
+      /* Style for Select2 dropdown */
+      .select2-container .select2-selection--single { height: calc(1.5em + 1rem + 2px); padding: 0.5rem; border: 1px solid #c7c7c7; border-radius: 0.25rem;}
+      .select2-container--default .select2-selection--single .select2-selection__arrow { height: calc(1.5em + 1rem); }
     </style>
 </head>
 <body>
@@ -35,7 +33,7 @@
         <h3 id="welcomeMessage"></h3>
         <form id="stockForm">
           <label for="productName">รายการสินค้า (พิมพ์เพื่อค้นหา)</label>
-          <select id="productName" name="productName" required></select>
+          <select id="productName" name="productName" style="width: 100%;" required></select>
           
           <div class="grid">
             <label for="productID">รหัสสินค้า<input type="text" id="productID" name="productID" readonly required></label>
@@ -56,6 +54,9 @@
       </article>
     </main>
 
-    <script src="script.js?v=5"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <script src="script.js?v=6"></script>
 </body>
 </html>

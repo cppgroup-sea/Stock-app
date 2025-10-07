@@ -88,6 +88,21 @@
             placeholder: true,
             placeholderValue: '-- กรุณาเลือกสินค้า --'
         });
+
+        // ========================= NEW FIX LOCATION =========================
+        // We move the event listener INSIDE this function
+        // to ensure it's attached AFTER the Choices instance is created.
+        selectElement.addEventListener('choice', function(event) {
+          if (event.detail.choice && event.detail.choice.customProperties) {
+              const props = event.detail.choice.customProperties;
+              document.getElementById('productID').value = props.id || '';
+              document.getElementById('unit').value = props.unit || '';
+          } else {
+              document.getElementById('productID').value = '';
+              document.getElementById('unit').value = '';
+          }
+        }, false);
+        // ====================================================================
         
         const choicesData = products.map(product => ({
             value: product.name,
@@ -101,20 +116,6 @@
         productChoices.setChoices(choicesData, 'value', 'label', true);
       }
       
-      // ========================= FINAL FIX STARTS HERE =========================
-      // The correct event name is 'choice', not 'changeChoice'
-      document.getElementById('productName').addEventListener('choice', function(event) {
-          if (event.detail.choice && event.detail.choice.customProperties) {
-              const props = event.detail.choice.customProperties;
-              document.getElementById('productID').value = props.id || '';
-              document.getElementById('unit').value = props.unit || '';
-          } else {
-              document.getElementById('productID').value = '';
-              document.getElementById('unit').value = '';
-          }
-      }, false);
-      // ========================== FINAL FIX ENDS HERE ==========================
-
       document.getElementById('stockForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const submitButton = document.getElementById('submitButton');

@@ -39,12 +39,12 @@
           <select id="productName" name="productName" required></select>
           
           <div class="grid">
-            <label for="productID">รหัสสินค้า<input type="text" id="productID" name="productID" readonly></label>
+            <label for="productID">รหัสสินค้า<input type="text" id="productID" name="productID" readonly required></label>
             <label for="lot">ล๊อต (Lot)<input type="text" id="lot" name="lot" required></label>
           </div>
           <div class="grid">
             <label for="quantity">จำนวน<input type="number" id="quantity" name="quantity" step="any" required></label>
-            <label for="unit">หน่วย<input type="text" id="unit" name="unit" readonly></label>
+            <label for="unit">หน่วย<input type="text" id="unit" name="unit" readonly required></label>
           </div>
           
           <fieldset class="radio-group">
@@ -85,7 +85,6 @@
       function populateProducts(products) {
         const selectElement = document.getElementById('productName');
         
-        // Initialize Choices.js
         productChoices = new Choices(selectElement, {
             searchEnabled: true,
             itemSelectText: 'กดเพื่อเลือก',
@@ -94,7 +93,6 @@
             placeholderValue: '-- กรุณาเลือกสินค้า --'
         });
         
-        // Prepare data in the format Choices.js needs
         const choicesData = products.map(product => ({
             value: product.name,
             label: `${product.id} - ${product.name}`,
@@ -104,18 +102,25 @@
             }
         }));
 
-        // Set the choices in the dropdown
         productChoices.setChoices(choicesData, 'value', 'label', true);
       }
+      
+      // ========================= FIX STARTS HERE =========================
+      // Use the 'changeChoice' event provided by Choices.js
+      document.getElementById('productName').addEventListener('changeChoice', function(event) {
+          // The selected choice details are in event.detail.choice
+          if (event.detail.choice && event.detail.choice.customProperties) {
+              const props = event.detail.choice.customProperties;
+              document.getElementById('productID').value = props.id || '';
+              document.getElementById('unit').value = props.unit || '';
+          } else {
+              // Clear fields if the choice is cleared
+              document.getElementById('productID').value = '';
+              document.getElementById('unit').value = '';
+          }
+      }, false);
+      // ========================== FIX ENDS HERE ==========================
 
-      document.getElementById('productName').addEventListener('change', function(e) {
-        if (!productChoices) return;
-        const selectedValue = productChoices.getValue(true);
-        const selectedData = selectedValue ? selectedValue.customProperties : null;
-        
-        document.getElementById('productID').value = selectedData ? selectedData.id : '';
-        document.getElementById('unit').value = selectedData ? selectedData.unit : '';
-      });
 
       document.getElementById('stockForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -138,7 +143,6 @@
           document.getElementById('stockForm').reset();
           document.getElementById('productID').value = '';
           document.getElementById('unit').value = '';
-          // Clear the selection in Choices.js and reset it
           productChoices.clearStore();
           productChoices.setChoiceByValue('');
         } catch (error) {
@@ -167,5 +171,3 @@
     </script>
 </body>
 </html>
-
-

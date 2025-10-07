@@ -4,44 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เข้าสู่ระบบ</title>
-    <base target="_top">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <link rel="stylesheet" href="style.css">
     <style>
-      body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f3f4f6; }
-      article { width: 100%; max-width: 400px; padding: 2rem; }
-      h2 { text-align: center; margin-bottom: 1.5rem; }
-      #error-message { color: #d32f2f; text-align: center; margin-top: 1rem; min-height: 20px; display: none; }
-      button { width: 100%; }
+      body { display: flex; justify-content: center; align-items: center; height: 100vh; }
+      article { width: 100%; max-width: 400px; }
     </style>
 </head>
 <body>
     <main class="container">
       <article>
-        <h2>เข้าสู่ระบบจัดการสต๊อก</h2>
+        <h2 style="text-align: center;">เข้าสู่ระบบจัดการสต๊อก</h2>
         <form id="loginForm">
           <label for="username">ชื่อผู้ใช้</label>
-          <input type="text" id="username" name="username" placeholder="Username" required>
-          
+          <input type="text" id="username" name="username" required>
           <label for="password">รหัสผ่าน</label>
-          <input type="password" id="password" name="password" placeholder="Password" required>
-          
+          <input type="password" id="password" name="password" required>
           <button type="submit" id="loginButton">เข้าสู่ระบบ</button>
         </form>
-        <p id="error-message"></p>
+        <p id="error-message" style="color: red; text-align: center; display: none;"></p>
       </article>
     </main>
     <script>
-      // !================== PASTE YOUR APPS SCRIPT URL HERE ==================!
-      const API_URL = "https://script.google.com/macros/s/AKfycbyE7MPF1Xei1ixIbb_tdOKPOMenFUt_27OqMEtN5SXSMCqF8sH6KPfVxchQU12AjnvE0A/exec";
-      // !=====================================================================!
+      const API_URL = "https://script.google.com/macros/s/AKfycbymkoZdbZLGtIEdceZTlk_WnsOfTkxHlarzzPR3_gbTNY1tZ5pI0IT_D4WeI5qRFc6JoA/exec"; // <-- PASTE YOUR URL HERE
 
       document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const loginButton = document.getElementById('loginButton');
         const errorMessage = document.getElementById('error-message');
-        
         loginButton.setAttribute('aria-busy', 'true');
-        loginButton.textContent = 'กำลังตรวจสอบ...';
         errorMessage.style.display = 'none';
 
         const username = document.getElementById('username').value;
@@ -56,34 +47,25 @@
           const result = await res.json();
 
           if (result.status === 'success' && result.data.loggedIn) {
-            // บันทึกข้อมูล user และ role ไว้ใน session
             sessionStorage.setItem('stockUser', result.data.user);
             sessionStorage.setItem('stockUserRole', result.data.role);
-
-            // --- ส่วนการตัดสินใจ ---
             const userRole = result.data.role;
             if (userRole === 'Sales' || userRole === 'Accounting') {
-                // ถ้าเป็น Sales หรือ Accounting ให้ไปหน้า onhand.html
                 window.location.href = 'onhand.html';
             } else {
-                // ถ้าเป็น Role อื่นๆ (เช่น Admin) ให้ไปหน้า main.html
                 window.location.href = 'main.html';
             }
-
           } else {
             errorMessage.textContent = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
             errorMessage.style.display = 'block';
             loginButton.removeAttribute('aria-busy');
-            loginButton.textContent = 'เข้าสู่ระบบ';
           }
         } catch (error) {
-          errorMessage.textContent = 'เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + error.message;
+          errorMessage.textContent = 'เกิดข้อผิดพลาดในการเชื่อมต่อ';
           errorMessage.style.display = 'block';
           loginButton.removeAttribute('aria-busy');
-          loginButton.textContent = 'เข้าสู่ระบบ';
         }
       });
     </script>
 </body>
 </html>
-

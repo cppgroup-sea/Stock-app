@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ประวัติรายการ</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+    <style>
+      .filter-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end; }
+    </style>
+</head>
+<body>
+    <main class="container">
+      <div class="card">
+        <h3>ค้นหาประวัติการทำรายการ</h3>
+        <form id="filterForm" class="filter-form">
+          <div>
+            <label for="productId">สินค้า</label>
+            <select id="productId" name="productId" style="width: 100%;"></select>
+          </div>
+          <div>
+            <label for="startDate">ตั้งแต่วันที่</label>
+            <input type="date" id="startDate" name="startDate">
+          </div>
+          <div>
+            <label for="endDate">ถึงวันที่</label>
+            <input type="date" id="endDate" name="endDate">
+          </div>
+          <button type="submit">ค้นหา</button>
+        </form>
+      </div>
+
+      <div class="card" id="resultsCard" style="display:none;">
+          <h4>ผลการค้นหา</h4>
+          <div style="overflow-x:auto;">
+            <table id="historyTable">
+              <thead><tr><th>Timestamp</th><th>รหัสสินค้า</th><th>ชื่อสินค้า</th><th>ล๊อต</th><th>ประเภท</th><th>จำนวน</th><th>หน่วย</th><th>ผู้ใช้</th></tr></thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+          <p id="loading" style="display: none;" aria-busy="true">กำลังค้นหาข้อมูล...</p>
+          <p id="noResults" style="display: none;">ไม่พบข้อมูลตามเงื่อนไขที่กำหนด</p>
+      </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="navbar.js"></script>
+    <script src="script-history.js"></script>
+</body>
+</html>

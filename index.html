@@ -32,13 +32,8 @@
     </main>
     <script>
       // !================== PASTE YOUR APPS SCRIPT URL HERE ==================!
-      const API_URL = "https://script.google.com/macros/s/AKfycbwFO8EtssD69dBC7JAekDol4Hl4_tx4DXwd6fK4R21ATxsDU-PBQvGKQ9859O-rYkl7ww/exec";
+      const API_URL = "https://script.google.com/macros/s/AKfycbyLs_tLC6X6STUVCZI2ccKg58VRbaygYr9NBqEtAznaiUU64iycJtnBxlmOP_o2cHW2CA/exec";
       // !=====================================================================!
-
-      // ถ้าเคยล็อกอินไว้แล้ว ให้ไปหน้า main เลย
-      if (sessionStorage.getItem('stockUser')) {
-        window.location.href = 'main.html';
-      }
 
       document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -55,16 +50,26 @@
         try {
           const res = await fetch(API_URL, {
             method: 'POST',
-            // Google Apps Script API requires a specific header format
             headers: {'Content-Type': 'text/plain;charset=utf-8'},
             body: JSON.stringify({ action: 'checkLogin', username, password })
           });
           const result = await res.json();
 
           if (result.status === 'success' && result.data.loggedIn) {
-            // Store username in session storage to stay logged in
+            // บันทึกข้อมูล user และ role ไว้ใน session
             sessionStorage.setItem('stockUser', result.data.user);
-            window.location.href = 'main.html';
+            sessionStorage.setItem('stockUserRole', result.data.role);
+
+            // --- ส่วนการตัดสินใจ ---
+            const userRole = result.data.role;
+            if (userRole === 'Sales' || userRole === 'Accounting') {
+                // ถ้าเป็น Sales หรือ Accounting ให้ไปหน้า onhand.html
+                window.location.href = 'onhand.html';
+            } else {
+                // ถ้าเป็น Role อื่นๆ (เช่น Admin) ให้ไปหน้า main.html
+                window.location.href = 'main.html';
+            }
+
           } else {
             errorMessage.textContent = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
             errorMessage.style.display = 'block';
@@ -80,5 +85,4 @@
       });
     </script>
 </body>
-
 </html>

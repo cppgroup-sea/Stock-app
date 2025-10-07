@@ -168,6 +168,45 @@
           alert('ไม่สามารถโหลดรายการสินค้าได้ กรุณาลองอีกครั้ง');
         }
       });
+        function populateProducts(products) {
+    const selectElement = document.getElementById('productName');
+    
+    productChoices = new Choices(selectElement, {
+        searchEnabled: true,
+        itemSelectText: 'กดเพื่อเลือก',
+        removeItemButton: false,
+        placeholder: true,
+        placeholderValue: '-- กรุณาเลือกสินค้า --'
+    });
+    
+    const choicesData = products.map(product => ({
+        value: product.name,
+        label: `${product.id} - ${product.name}`,
+        customProperties: {
+            id: product.id,
+            unit: product.unit
+        }
+    }));
+
+    // DEBUG บรรทัดที่ 1: แสดงข้อมูลทั้งหมดที่กำลังจะถูกใส่ใน Dropdown
+    console.log("Data being sent to Choices.js:", choicesData);
+
+    productChoices.setChoices(choicesData, 'value', 'label', true);
+}
+        document.getElementById('productName').addEventListener('changeChoice', function(event) {
+    // DEBUG บรรทัดที่ 2: แสดงข้อมูลของไอเท็มที่ถูกเลือก
+    console.log("Choice event triggered. Event detail:", event.detail);
+
+    if (event.detail.choice && event.detail.choice.customProperties) {
+        const props = event.detail.choice.customProperties;
+        document.getElementById('productID').value = props.id || '';
+        document.getElementById('unit').value = props.unit || '';
+    } else {
+        document.getElementById('productID').value = '';
+        document.getElementById('unit').value = '';
+    }
+}, false);
     </script>
 </body>
 </html>
+

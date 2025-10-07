@@ -3,38 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบจัดการสต๊อก</title>
-    <base target="_top">
-    
+    <title>บันทึกสต๊อก</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-    <style>
-      body { background-color: #f3f4f6; }
-      nav { display: flex; justify-content: space-between; align-items: center; padding: 0 1rem; }
-      main.container { padding-top: 2rem; max-width: 800px; }
-      article { padding: 2rem; }
-      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-      #submitButton { grid-column: 1 / -1; }
-      .radio-group { display: flex; gap: 2rem; margin-bottom: 1rem; }
-      /* Style for Select2 dropdown */
-      .select2-container .select2-selection--single { height: calc(1.5em + 1rem + 2px); padding: 0.5rem; border: 1px solid #c7c7c7; border-radius: 0.25rem;}
-      .select2-container--default .select2-selection--single .select2-selection__arrow { height: calc(1.5em + 1rem); }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav class="container-fluid">
-      <ul><li><strong>ระบบจัดการสต๊อก</strong></li></ul>
-      <ul><li><a href="#" role="button" class="secondary" id="logoutButton">ออกจากระบบ</a></li></ul>
-    </nav>
-    
     <main class="container">
-      <article>
-        <h3 id="welcomeMessage"></h3>
+      <div class="card">
+        <h3>บันทึกรายการสต๊อก</h3>
         <form id="stockForm">
           <label for="productName">รายการสินค้า (พิมพ์เพื่อค้นหา)</label>
           <select id="productName" name="productName" style="width: 100%;" required></select>
-          
           <div class="grid">
             <label for="productID">รหัสสินค้า<input type="text" id="productID" name="productID" readonly required></label>
             <label for="lot">ล๊อต (Lot)<input type="text" id="lot" name="lot" required></label>
@@ -43,20 +23,18 @@
             <label for="quantity">จำนวน<input type="number" id="quantity" name="quantity" step="any" required></label>
             <label for="unit">หน่วย<input type="text" id="unit" name="unit" readonly required></label>
           </div>
-          
-          <fieldset class="radio-group">
+          <fieldset>
             <label for="type-in"><input type="radio" id="type-in" name="type" value="รับเข้า" checked> รับเข้า</label>
             <label for="type-out"><input type="radio" id="type-out" name="type" value="ตัดออก"> ตัดออก</label>
           </fieldset>
-
           <button type="submit" id="submitButton">บันทึกรายการ</button>
         </form>
-      </article>
+      </div>
     </main>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    
-    <script src="script.js?v=6"></script>
+    <script src="navbar.js"></script>
+    <script src="script-main.js"></script>
 </body>
 </html>

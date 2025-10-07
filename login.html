@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ</title>
+    <base target="_top">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+      body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f3f4f6; }
+      article { width: 100%; max-width: 400px; padding: 2rem; }
+      h2 { text-align: center; margin-bottom: 1.5rem; }
+      #error-message { color: #d32f2f; text-align: center; margin-top: 1rem; min-height: 20px; display: none; }
+      button { width: 100%; }
+    </style>
+</head>
+<body>
+    <main class="container">
+      <article>
+        <h2>เข้าสู่ระบบจัดการสต๊อก</h2>
+        <form id="loginForm">
+          <label for="username">ชื่อผู้ใช้</label>
+          <input type="text" id="username" name="username" placeholder="Username" required>
+          
+          <label for="password">รหัสผ่าน</label>
+          <input type="password" id="password" name="password" placeholder="Password" required>
+          
+          <button type="submit" id="loginButton">เข้าสู่ระบบ</button>
+        </form>
+        <p id="error-message"></p>
+      </article>
+    </main>
+    <script>
+      // !================== PASTE YOUR APPS SCRIPT URL HERE ==================!
+      const API_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
+      // !=====================================================================!
+
+      // ถ้าเคยล็อกอินไว้แล้ว ให้ไปหน้า main เลย
+      if (sessionStorage.getItem('stockUser')) {
+        window.location.href = 'main.html';
+      }
+
+      document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const loginButton = document.getElementById('loginButton');
+        const errorMessage = document.getElementById('error-message');
+        
+        loginButton.setAttribute('aria-busy', 'true');
+        loginButton.textContent = 'กำลังตรวจสอบ...';
+        errorMessage.style.display = 'none';
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        try {
+          const res = await fetch(API_URL, {
+            method: 'POST',
+            // Google Apps Script API requires a specific header format
+            headers: {'Content-Type': 'text/plain;charset=utf-8'},
+            body: JSON.stringify({ action: 'checkLogin', username, password })
+          });
+          const result = await res.json();
+
+          if (result.status === 'success' && result.data.loggedIn) {
+            // Store username in session storage to stay logged in
+            sessionStorage.setItem('stockUser', result.data.user);
+            window.location.href = 'main.html';
+          } else {
+            errorMessage.textContent = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
+            errorMessage.style.display = 'block';
+            loginButton.removeAttribute('aria-busy');
+            loginButton.textContent = 'เข้าสู่ระบบ';
+          }
+        } catch (error) {
+          errorMessage.textContent = 'เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + error.message;
+          errorMessage.style.display = 'block';
+          loginButton.removeAttribute('aria-busy');
+          loginButton.textContent = 'เข้าสู่ระบบ';
+        }
+      });
+    </script>
+</body>
+</html>

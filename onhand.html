@@ -4,118 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>สรุปสต๊อกคงเหลือ</title>
-    <base target="_top">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-    <style>
-      body { background-color: #f3f4f6; }
-      nav { display: flex; justify-content: space-between; align-items: center; padding: 0 1rem; }
-      main.container { padding-top: 2rem; }
-      table { width: 100%; }
-      th, td { text-align: left; }
-      #loading { text-align: center; padding: 2rem; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav class="container-fluid">
-      <ul><li><strong>สรุปยอดสต๊อกคงเหลือ</strong></li></ul>
-      <ul>
-        <li><span id="welcomeMessage" style="margin-right: 1rem;"></span></li>
-        <li><a href="#" role="button" class="secondary" id="logoutButton">ออกจากระบบ</a></li>
-      </ul>
-    </nav>
-    
     <main class="container">
-      <div role="document">
-        <table id="stockTable">
-          <thead>
-            <tr>
-              <th>รหัสสินค้า</th>
-              <th>ชื่อสินค้า</th>
-              <th>ล๊อต</th>
-              <th>จำนวนคงเหลือ</th>
-              <th>หน่วย</th>
-              <th>อัปเดตล่าสุด</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody">
-            </tbody>
-        </table>
+      <div class="card">
+        <h3>สรุปยอดสต๊อกคงเหลือ</h3>
+        <div style="overflow-x:auto;">
+          <table id="stockTable">
+            <thead>
+              <tr>
+                <th>รหัสสินค้า</th>
+                <th>ชื่อสินค้า</th>
+                <th>ล๊อต</th>
+                <th>จำนวนคงเหลือ</th>
+                <th>หน่วย</th>
+                <th>อัปเดตล่าสุด</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
         <p id="loading" aria-busy="true">กำลังโหลดข้อมูลสต๊อก...</p>
       </div>
     </main>
 
-    <script>
-      // !================== PASTE YOUR APPS SCRIPT URL HERE ==================!
-      const API_URL = "https://script.google.com/macros/s/AKfycbyE7MPF1Xei1ixIbb_tdOKPOMenFUt_27OqMEtN5SXSMCqF8sH6KPfVxchQU12AjnvE0A/exec";
-      // !=====================================================================!
-
-      const loggedInUser = sessionStorage.getItem('stockUser');
-
-      // ถ้าไม่ได้ล็อกอิน ให้เด้งกลับไปหน้าแรก
-      if (!loggedInUser) {
-        window.location.href = 'index.html';
-      }
-
-      // ฟังก์ชันกลางสำหรับเรียก API
-      async function callApi(action, payload = {}) {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: {'Content-Type': 'text/plain;charset=utf-8'},
-            body: JSON.stringify({ action, payload, user: loggedInUser })
-        });
-        const result = await response.json();
-        if (result.status === 'error') throw new Error(result.message);
-        return result.data;
-      }
-      
-      document.getElementById('logoutButton').addEventListener('click', () => {
-        sessionStorage.removeItem('stockUser');
-        sessionStorage.removeItem('stockUserRole');
-        window.location.href = 'index.html';
-      });
-
-      window.addEventListener('load', async () => {
-        document.getElementById('welcomeMessage').textContent = `ผู้ใช้: ${loggedInUser}`;
-        const tableBody = document.getElementById('tableBody');
-        const loadingIndicator = document.getElementById('loading');
-        
-        try {
-          const stockData = await callApi('getStockSummaryData');
-          
-          if (stockData.length === 0) {
-            loadingIndicator.textContent = 'ไม่พบข้อมูลสต๊อก';
-            loadingIndicator.removeAttribute('aria-busy');
-            return;
-          }
-
-          // Clear loading state
-          tableBody.innerHTML = ''; 
-
-          stockData.forEach(row => {
-            const tr = document.createElement('tr');
-            
-            // Format the date for better readability
-            const lastUpdated = new Date(row[5]).toLocaleString('th-TH');
-
-            tr.innerHTML = `
-              <td>${row[0]}</td>
-              <td>${row[1]}</td>
-              <td>${row[2]}</td>
-              <td>${row[3]}</td>
-              <td>${row[4]}</td>
-              <td>${lastUpdated}</td>
-            `;
-            tableBody.appendChild(tr);
-          });
-
-          loadingIndicator.style.display = 'none'; // Hide loading indicator
-          
-        } catch (error) {
-          console.error('Failed to load stock data:', error);
-          loadingIndicator.textContent = 'ไม่สามารถโหลดข้อมูลได้: ' + error.message;
-          loadingIndicator.removeAttribute('aria-busy');
-        }
-      });
-    </script>
+    <script src="navbar.js"></script>
+    <script src="script-onhand.js"></script>
 </body>
 </html>

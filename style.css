@@ -39,29 +39,26 @@ table {
     background-color: var(--fb-card-bg);
 }
 
-/* === DEFINITIVE SELECT2 STYLING FIX === */
+/* === SELECT2 STYLING OVERRIDE === */
 
-/* Match the height of other form inputs and use Flexbox for alignment */
-.select2-container .select2-selection--single { 
+.select2-container .select2-selection--single {
     height: 3.125rem !important; 
-    display: flex !important;
-    align-items: center !important;
-    padding: 0 !important; /* Reset parent padding */
+    padding: 0 !important;
 }
 
-/* Style the container for the selected text */
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-    /* Prevent text from overflowing */
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
-    
-    /* Set specific padding for the text itself */
+    line-height: 3.125rem !important;
     padding-left: 0.75rem !important;
-    padding-right: 25px !important; /* Make space for the arrow */
 }
 
-/* Ensure the dropdown panel appears on top of everything */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 3.125rem !important;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 20px;
+}
+
 .select2-dropdown {
     z-index: 9999 !important;
 }

@@ -22,14 +22,17 @@ function populateProducts(products) {
   }));
 
   const $productSelect = $('#productName');
+  
   $productSelect.select2({
     placeholder: '-- กรุณาเลือกสินค้า --',
-    allowClear: true, // Optional: Adds a small 'x' to clear the selection
-    data: select2Data
+    allowClear: true,
+    data: select2Data,
+    // ** THE FINAL FIX IS HERE **
+    // This tells Select2 to render the dropdown attached to the main body,
+    // escaping any parent stacking contexts (like our card).
+    dropdownParent: $('body')
   });
 
-  // ** THE FIX IS HERE **
-  // This line clears the initial auto-selection and forces the placeholder to show.
   $productSelect.val(null).trigger('change');
 
   $productSelect.on('select2:select', function (e) {

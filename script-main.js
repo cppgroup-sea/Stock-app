@@ -27,10 +27,10 @@ function populateProducts(products) {
     placeholder: '-- กรุณาเลือกสินค้า --',
     allowClear: true,
     data: select2Data,
-    // ** THE FINAL FIX IS HERE **
-    // This tells Select2 to render the dropdown attached to the main body,
-    // escaping any parent stacking contexts (like our card).
-    dropdownParent: $('body')
+    // ** Final refined fix **
+    // Attach the dropdown to the nearest parent with the class 'card'.
+    // This keeps it within the card but should solve the stacking issue.
+    dropdownParent: $productSelect.closest('.card')
   });
 
   $productSelect.val(null).trigger('change');

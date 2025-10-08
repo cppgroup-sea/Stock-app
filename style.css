@@ -39,26 +39,32 @@ table {
     background-color: var(--fb-card-bg);
 }
 
-/* === FINAL SELECT2 STYLING OVERRIDE === */
+/* === DEFINITIVE SELECT2 STYLING FIX === */
 
-/* Set the container height to match other inputs */
+/* Match the height of other form inputs */
 .select2-container .select2-selection--single { 
     height: 3.125rem !important; 
 }
 
-/* Target the inner span that holds the text and arrow */
+/* Use Flexbox to perfectly align content (text and arrow) vertically */
+.select2-container--default .select2-selection--single {
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Style the container for the selected text */
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-    /* Set line-height equal to the container height to force vertical centering */
-    line-height: 3.125rem !important;
+    /* Prevent text from overflowing */
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    
+    /* Adjust padding */
     padding-left: 0.75rem !important;
+    padding-right: 25px !important; /* Make space for the arrow */
 }
 
-/* Ensure the arrow is also vertically centered */
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 3.125rem !important;
-}
-
-/* Ensure dropdown panel appears on top */
+/* Ensure the dropdown panel appears on top of everything */
 .select2-dropdown {
     z-index: 9999 !important;
 }

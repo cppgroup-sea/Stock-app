@@ -39,17 +39,30 @@ table {
     background-color: var(--fb-card-bg);
 }
 
-/* === FINAL SELECT2 STYLING FIX (Targeted Approach) === */
+/* === FINAL SELECT2 STYLING FIX === */
 
-/* Match the height of Pico.css inputs */
+/* Match the height and layout of Pico.css inputs */
 .select2-container .select2-selection--single { 
     height: 3.125rem !important; 
+    display: flex !important;
+    align-items: center !important;
+    border: 1px solid #c7c7c7 !important; 
+    border-radius: 0.25rem !important;
 }
 
-/* Force the selected text to align vertically */
+/* Vertically center the arrow */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100% !important;
+    position: static !important; /* Let Flexbox handle the positioning */
+    order: 2; /* Move arrow to the end */
+    margin-left: auto;
+}
+
+/* Vertically center the selected text */
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 3.125rem !important; /* Match the height of the container */
     padding-left: 0.75rem !important;
+    padding-right: 0 !important;
+    order: 1; /* Ensure text is first */
 }
 
 /* Ensure the dropdown panel appears on top of everything */

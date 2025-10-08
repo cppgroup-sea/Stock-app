@@ -41,15 +41,12 @@ table {
 
 /* === DEFINITIVE SELECT2 STYLING FIX === */
 
-/* Match the height of other form inputs */
+/* Match the height of other form inputs and use Flexbox for alignment */
 .select2-container .select2-selection--single { 
     height: 3.125rem !important; 
-}
-
-/* Use Flexbox to perfectly align content (text and arrow) vertically */
-.select2-container--default .select2-selection--single {
     display: flex !important;
     align-items: center !important;
+    padding: 0 !important; /* Reset parent padding */
 }
 
 /* Style the container for the selected text */
@@ -59,7 +56,7 @@ table {
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
     
-    /* Adjust padding */
+    /* Set specific padding for the text itself */
     padding-left: 0.75rem !important;
     padding-right: 25px !important; /* Make space for the arrow */
 }

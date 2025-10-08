@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbymkoZdbZLGtIEdceZTlk_WnsOfTkxHlarzzPR3_gbTNY1tZ5pI0IT_D4WeI5qRFc6JoA/exec"; // <-- PASTE YOUR URL HERE
+const API_URL = "https://script.google.com/macros/s/AKfycbwfpl1zo1rKf7-4pszn1Y4trQY1UV1Vj5Hr6Lj2u7M0ZzXqVWrqEAce8gp5NqikhS8Rwg/exec"; // <-- PASTE YOUR URL HERE
 
 const loggedInUser = sessionStorage.getItem('stockUser');
 if (!loggedInUser) window.location.href = 'index.html';
@@ -19,7 +19,6 @@ function populateProductFilter(products) {
     id: product.id,
     text: `${product.id} - ${product.name}`
   }));
-  // Add an "All" option
   select2Data.unshift({ id: 'all', text: 'สินค้าทั้งหมด' });
 
   $('#productId').select2({
@@ -64,6 +63,7 @@ $('#filterForm').on('submit', async (e) => {
           <td>${row[5]}</td>
           <td>${row[6]}</td>
           <td>${row[7]}</td>
+          <td>${row[8] || ''}</td>
         `);
         tableBody.append(tr);
       });

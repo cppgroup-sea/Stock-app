@@ -18,7 +18,7 @@ nav.navbar {
   padding: 0.5rem 1rem;
   position: sticky;
   top: 0;
-  z-index: 1000; /* Increased z-index for navbar */
+  z-index: 1000;
 }
 
 main.container {
@@ -50,12 +50,7 @@ table {
     height: calc(1.5em + 1rem); 
 }
 
-/* Final Stacking Fix for Select2 */
-.card, article {
-    /* This prevents the card from creating a stacking context that traps the dropdown */
-    transform: translateZ(0); 
-}
-
+/* This ensures the dropdown, when attached to the body, appears on top of everything */
 .select2-container--open {
-    z-index: 9999 !important; /* Force dropdown to be on top */
+    z-index: 9999 !important;
 }

@@ -39,17 +39,16 @@ table {
     background-color: var(--fb-card-bg);
 }
 
-/* === FINAL SELECT2 STYLING FIX (REFINED) === */
+/* === FINAL SELECT2 STYLING FIX === */
 
 .select2-container .select2-selection--single { 
-    height: 3.125rem; /* Match Pico input height explicitly */
+    height: 3.125rem;
     border: 1px solid #c7c7c7; 
     border-radius: 0.25rem;
     display: flex;
-    align-items: center; /* This is for vertical alignment */
+    align-items: center;
 }
 
-/* Vertically align the arrow */
 .select2-container--default .select2-selection--single .select2-selection__arrow { 
     height: 100%;
     position: absolute;
@@ -60,10 +59,10 @@ table {
     align-items: center;
 }
 
-/* Adjust the selected text's container */
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-    padding-left: 0.75rem;
-    line-height: normal; /* Reset line-height to let flexbox handle it */
+    /* Reset padding and let the parent handle it */
+    padding-left: 0; 
+    line-height: normal; 
 }
 
 /* This ensures the dropdown, when attached to the body, appears on top of everything */

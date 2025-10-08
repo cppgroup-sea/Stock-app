@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const user = sessionStorage.getItem('stockUser');
   const role = sessionStorage.getItem('stockUserRole');
 
-  if (!user) return; // Don't build navbar on login page if not logged in
+  if (!user) return; 
 
   const navbarHTML = `
     <nav class="navbar container-fluid">

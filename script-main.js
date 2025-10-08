@@ -22,7 +22,15 @@ function populateProducts(products) {
   }));
 
   const $productSelect = $('#productName');
-  $productSelect.select2({ placeholder: '-- กรุณาเลือกสินค้า --', data: select2Data });
+  $productSelect.select2({
+    placeholder: '-- กรุณาเลือกสินค้า --',
+    allowClear: true, // Optional: Adds a small 'x' to clear the selection
+    data: select2Data
+  });
+
+  // ** THE FIX IS HERE **
+  // This line clears the initial auto-selection and forces the placeholder to show.
+  $productSelect.val(null).trigger('change');
 
   $productSelect.on('select2:select', function (e) {
     const data = e.params.data;

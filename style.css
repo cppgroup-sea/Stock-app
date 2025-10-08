@@ -39,33 +39,26 @@ table {
     background-color: var(--fb-card-bg);
 }
 
-/* === FINAL SELECT2 STYLING FIX === */
+/* === FINAL SELECT2 STYLING OVERRIDE === */
 
-/* Match the height and layout of Pico.css inputs */
+/* Set the container height to match other inputs */
 .select2-container .select2-selection--single { 
     height: 3.125rem !important; 
-    display: flex !important;
-    align-items: center !important;
-    border: 1px solid #c7c7c7 !important; 
-    border-radius: 0.25rem !important;
 }
 
-/* Vertically center the arrow */
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 100% !important;
-    position: static !important; /* Let Flexbox handle the positioning */
-    order: 2; /* Move arrow to the end */
-    margin-left: auto;
-}
-
-/* Vertically center the selected text */
+/* Target the inner span that holds the text and arrow */
 .select2-container--default .select2-selection--single .select2-selection__rendered {
+    /* Set line-height equal to the container height to force vertical centering */
+    line-height: 3.125rem !important;
     padding-left: 0.75rem !important;
-    padding-right: 0 !important;
-    order: 1; /* Ensure text is first */
 }
 
-/* Ensure the dropdown panel appears on top of everything */
+/* Ensure the arrow is also vertically centered */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 3.125rem !important;
+}
+
+/* Ensure dropdown panel appears on top */
 .select2-dropdown {
     z-index: 9999 !important;
 }

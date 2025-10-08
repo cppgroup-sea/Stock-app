@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbymkoZdbZLGtIEdceZTlk_WnsOfTkxHlarzzPR3_gbTNY1tZ5pI0IT_D4WeI5qRFc6JoA/exec"; // <-- PASTE YOUR URL HERE
+const API_URL = "https://script.google.com/macros/s/AKfycbwfpl1zo1rKf7-4pszn1Y4trQY1UV1Vj5Hr6Lj2u7M0ZzXqVWrqEAce8gp5NqikhS8Rwg/exec"; // <-- PASTE YOUR URL HERE
 
 const loggedInUser = sessionStorage.getItem('stockUser');
 if (!loggedInUser) window.location.href = 'index.html';
@@ -50,7 +50,8 @@ $('#stockForm').on('submit', async (e) => {
     lot: $('#lot').val(),
     quantity: $('#quantity').val(),
     unit: $('#unit').val(),
-    type: $('input[name="type"]:checked').val()
+    type: $('input[name="type"]:checked').val(),
+    remarks: $('#remarks').val()
   };
   
   try {

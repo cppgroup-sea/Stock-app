@@ -39,26 +39,34 @@ table {
     background-color: var(--fb-card-bg);
 }
 
-/* === SELECT2 STYLING OVERRIDE === */
+/* === FINAL SELECT2 STYLING FIX === */
 
-.select2-container .select2-selection--single {
-    height: 3.125rem !important; 
-    padding: 0 !important;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 3.125rem !important;
-    padding-left: 0.75rem !important;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__arrow {
+/* Set the container height and use Flexbox for alignment */
+.select2-container .select2-selection--single { 
     height: 3.125rem !important;
-    position: absolute;
-    top: 1px;
-    right: 1px;
-    width: 20px;
+    border: 1px solid #c7c7c7 !important; 
+    border-radius: 0.25rem !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 !important; /* Reset parent padding */
 }
 
+/* Vertically align the arrow */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100% !important;
+    position: static !important; /* Let Flexbox handle positioning */
+    display: flex;
+    align-items: center;
+    padding-right: 0.75rem;
+}
+
+/* Style the selected text's container */
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    padding-left: 0.75rem !important; /* Match default input padding */
+    padding-right: 0 !important;
+}
+
+/* Ensure dropdown appears on top */
 .select2-dropdown {
     z-index: 9999 !important;
 }

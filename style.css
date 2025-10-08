@@ -41,3 +41,11 @@ table {
 
 .select2-container .select2-selection--single { height: calc(1.5em + 1rem + 2px); padding: 0.5rem; border: 1px solid #c7c7c7; border-radius: 0.25rem;}
 .select2-container--default .select2-selection--single .select2-selection__arrow { height: calc(1.5em + 1rem); }
+
+/* Fix for Select2 overlapping original select element */
+select#productName.select2-hidden-accessible + .select2-container {
+    display: block !important;
+}
+select#productName {
+    display: none !important;
+}

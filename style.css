@@ -42,12 +42,18 @@ table {
 .select2-container .select2-selection--single { height: calc(1.5em + 1rem + 2px); padding: 0.5rem; border: 1px solid #c7c7c7; border-radius: 0.25rem;}
 .select2-container--default .select2-selection--single .select2-selection__arrow { height: calc(1.5em + 1rem); }
 
-/* Hide original select element that Select2 replaces */
-select.select2-hidden-accessible {
-  opacity: 0 !important;
+/* FINAL CSS OVERRIDE FIX */
+.select2-container {
+    position: relative !important;
+    z-index: 2 !important;
 }
 
-/* Fix for Select2 dropdown appearing behind other elements */
-.select2-container--open .select2-dropdown {
-  z-index: 9999;
+.select2-dropdown {
+    position: relative !important;
+    z-index: 3 !important;
+}
+
+div.grid {
+    position: relative !important;
+    z-index: 1 !important;
 }

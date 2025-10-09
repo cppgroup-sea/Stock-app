@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwRUVh2fhmvRa4jGEbLMNnQaVnO88MRSrUAa_TZ8le0uG2ZueRiIP6R6f4iUAjTAkKEvQ/exec"; // <-- PASTE YOUR URL HERE
+const API_URL = "https://script.google.com/macros/s/AKfycbwK2vCC5bWzyMb5AhB1dLLjZPCwigTcySe-P2cUK_CMbb_OSkbK6xecqe4JiWsjspW-zA/exec"; // <-- PASTE YOUR URL HERE
 
 const loggedInUser = sessionStorage.getItem('stockUser');
 if (!loggedInUser) window.location.href = 'index.html';

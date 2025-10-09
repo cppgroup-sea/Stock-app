@@ -41,41 +41,45 @@ table {
 
 /* === DEFINITIVE SELECT2 STYLING FIX === */
 
-/* 1. Main container styling */
-.select2-container--default .select2-selection--single { 
+/* 1. Set the container height and use Flexbox for alignment */
+.select2-container .select2-selection--single { 
     height: 3.125rem !important;
-    border: 1px solid #ced4da !important;
+    border: 1px solid #c7c7c7 !important; 
     border-radius: 0.25rem !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 !important; /* Reset parent padding */
 }
 
-/* 2. Selected text styling */
+/* 2. Style the container for the selected text */
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-    color: #495057;
-    line-height: 3.125rem !important; /* Vertically centers text */
-    padding-left: 0.75rem !important; 
-    padding-right: 30px !important; 
-
-    /* Fix for text overflow ("...") */
-    white-space: nowrap !important;
+    /* Prevent text from overflowing */
     overflow: hidden !important;
     text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    
+    /* Set specific padding for the text itself */
+    padding-left: 0.75rem !important;
+    padding-right: 25px !important; /* Make space for the arrow */
 }
 
-/* 3. Arrow styling */
+/* 3. Vertically align the arrow */
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 3.125rem !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 1px !important;
-    width: 20px !important;
+    height: 100% !important;
+    position: static !important; /* Let Flexbox handle positioning */
+    display: flex;
+    align-items: center;
+    padding-right: 0.75rem;
+    order: 2; /* Move arrow to the end */
+    margin-left: auto;
 }
 
-/* 4. Dropdown panel z-index */
+/* 4. Ensure the dropdown panel appears on top of everything */
 .select2-dropdown {
     z-index: 9999 !important;
 }
 
-/* 5. Dropdown options styling */
+/* 5. Ensure dropdown options are fully visible */
 .select2-results__option {
     padding: 8px 12px !important;
     white-space: nowrap !important;

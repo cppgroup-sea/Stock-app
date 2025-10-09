@@ -6,9 +6,6 @@
     <title>ประวัติรายการ</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <link rel="stylesheet" href="style.css">
-    <style>
-      .filter-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end; }
-    </style>
 </head>
 <body>
     <main class="container">
@@ -36,7 +33,20 @@
           <h4>ผลการค้นหา</h4>
           <div style="overflow-x:auto;">
             <table id="historyTable">
-              <thead><tr><th>Timestamp</th><th>รหัสสินค้า</th><th>ชื่อสินค้า</th><th>ล๊อต</th><th>ประเภท</th><th>จำนวน</th><th>หน่วย</th><th>ผู้ใช้</th><th>หมายเหตุ</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>รหัสสินค้า</th>
+                  <th>ชื่อสินค้า</th>
+                  <th>ล๊อต</th>
+                  <th>วันหมดอายุ</th>
+                  <th>ประเภท</th>
+                  <th>จำนวน</th>
+                  <th>หน่วย</th>
+                  <th>ผู้ใช้</th>
+                  <th>หมายเหตุ</th>
+                </tr>
+              </thead>
               <tbody id="tableBody"></tbody>
             </table>
           </div>
@@ -44,7 +54,6 @@
           <p id="noResults" style="display: none;">ไม่พบข้อมูลตามเงื่อนไขที่กำหนด</p>
       </div>
     </main>
-
     <script src="navbar.js"></script>
     <script src="script-history.js"></script>
 </body>

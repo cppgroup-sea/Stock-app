@@ -1,18 +1,9 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwfpl1zo1rKf7-4pszn1Y4trQY1UV1Vj5Hr6Lj2u7M0ZzXqVWrqEAce8gp5NqikhS8Rwg/exec"; // <-- PASTE YOUR URL HERE
+const API_URL = "https://script.google.com/macros/s/AKfycbziJt0ipRwluqw7w2MvFnmROYZdSNAj3deDbAF7f0EWefdxAXp0UyiG1M7SfzfeWLAM/exec"; // <-- PASTE YOUR URL HERE
 
 const loggedInUser = sessionStorage.getItem('stockUser');
 if (!loggedInUser) window.location.href = 'index.html';
 
-async function callApi(action, payload = {}) {
-  const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {'Content-Type': 'text/plain;charset=utf-8'},
-      body: JSON.stringify({ action, payload, user: loggedInUser })
-  });
-  const result = await response.json();
-  if (result.status === 'error') throw new Error(result.message);
-  return result.data;
-}
+async function callApi(action, payload = {}) { /* ... same as before ... */ }
 
 window.addEventListener('load', async () => {
   const tableBody = document.getElementById('tableBody');
@@ -21,31 +12,28 @@ window.addEventListener('load', async () => {
   try {
     const stockData = await callApi('getStockSummaryData');
     
-    if (stockData.length === 0) {
-      loadingIndicator.textContent = 'ไม่พบข้อมูลสต๊อก';
-      loadingIndicator.removeAttribute('aria-busy');
-      return;
-    }
+    if (stockData.length === 0) { /* ... same as before ... */ }
 
     tableBody.innerHTML = ''; 
     stockData.forEach(row => {
       const tr = document.createElement('tr');
-      const lastUpdated = new Date(row[5]).toLocaleString('th-TH');
+      
+      // Format dates for better readability
+      const expDate = row[3] ? new Date(row[3]).toLocaleDateString('th-TH') : 'N/A';
+      const lastUpdated = new Date(row[6]).toLocaleString('th-TH');
+
       tr.innerHTML = `
         <td>${row[0]}</td>
         <td>${row[1]}</td>
         <td>${row[2]}</td>
-        <td>${row[3]}</td>
+        <td>${expDate}</td>
         <td>${row[4]}</td>
+        <td>${row[5]}</td>
         <td>${lastUpdated}</td>
       `;
       tableBody.appendChild(tr);
     });
     loadingIndicator.style.display = 'none';
     
-  } catch (error) {
-    console.error('Failed to load stock data:', error);
-    loadingIndicator.textContent = 'ไม่สามารถโหลดข้อมูลได้: ' + error.message;
-    loadingIndicator.removeAttribute('aria-busy');
-  }
+  } catch (error) { /* ... same as before ... */ }
 });

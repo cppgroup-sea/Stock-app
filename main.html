@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>บันทึกStock</title>
+    <title>บันทึกสต๊อก</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <main class="container">
       <div class="card">
-        <h3>บันทึกรายการStock</h3>
+        <h3>บันทึกรายการสต๊อก</h3>
         <form id="stockForm">
-          
           <label for="productSearch">รายการสินค้า (พิมพ์เพื่อค้นหา)</label>
           <input type="text" id="productSearch" list="productList" name="productSearch" autocomplete="off" required>
           <datalist id="productList"></datalist>
-
           <div class="grid">
             <label for="productID">รหัสสินค้า<input type="text" id="productID" name="productID" readonly required></label>
             <label for="unit">หน่วย<input type="text" id="unit" name="unit" readonly required></label>
@@ -25,10 +23,8 @@
             <label for="lot">ล๊อต (Lot)<input type="text" id="lot" name="lot" required></label>
             <label for="expDate">วันหมดอายุ (ถ้ามี)<input type="date" id="expDate" name="expDate"></label>
           </div>
-          
           <label for="quantity">จำนวน</label>
           <input type="number" id="quantity" name="quantity" step="any" required>
-          
           <fieldset>
             <label for="type-in"><input type="radio" id="type-in" name="type" value="รับเข้า" checked> รับเข้า</label>
             <label for="type-out"><input type="radio" id="type-out" name="type" value="ตัดออก"> ตัดออก</label>
@@ -39,7 +35,6 @@
         </form>
       </div>
     </main>
-
     <script src="navbar.js"></script>
     <script src="script-main.js"></script>
 </body>

@@ -41,18 +41,17 @@ table {
 
 /* === DEFINITIVE SELECT2 STYLING FIX === */
 
-/* 1. Set the container height and use Flexbox for alignment */
-.select2-container .select2-selection--single { 
+/* 1. Main container styling */
+.select2-container--default .select2-selection--single { 
     height: 3.125rem !important;
-    border: 1px solid #c7c7c7 !important; 
+    border: 1px solid #ced4da !important;
     border-radius: 0.25rem !important;
-    display: flex !important;
-    align-items: center !important;
 }
 
-/* 2. Style the container for the selected text */
+/* 2. Selected text styling */
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-    color: #444;
+    color: #495057;
+    line-height: 3.125rem !important; /* Vertically centers text */
     padding-left: 0.75rem !important; 
     padding-right: 30px !important; 
 
@@ -62,24 +61,21 @@ table {
     text-overflow: ellipsis !important;
 }
 
-/* 3. Style the arrow */
+/* 3. Arrow styling */
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 100% !important;
+    height: 3.125rem !important;
     position: absolute !important;
     top: 0 !important;
-    right: 5px !important;
+    right: 1px !important;
     width: 20px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
 }
 
-/* 4. Ensure dropdown panel appears on top */
+/* 4. Dropdown panel z-index */
 .select2-dropdown {
     z-index: 9999 !important;
 }
 
-/* 5. Style dropdown options */
+/* 5. Dropdown options styling */
 .select2-results__option {
     padding: 8px 12px !important;
     white-space: nowrap !important;

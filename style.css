@@ -48,22 +48,31 @@ table {
     border-radius: 0.25rem !important;
     display: flex !important;
     align-items: center !important;
-    padding: 0 !important; /* Reset parent padding */
+    padding: 0 !important;
 }
 
 /* Vertically align the arrow */
 .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 100% !important;
-    position: static !important; /* Let Flexbox handle positioning */
+    position: static !important;
     display: flex;
     align-items: center;
     padding-right: 0.75rem;
+    order: 2; /* Move arrow to the end */
+    margin-left: auto;
 }
 
 /* Style the selected text's container */
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-    padding-left: 0.75rem !important; /* Match default input padding */
+    padding-left: 0.75rem !important;
     padding-right: 0 !important;
+    order: 1; /* Ensure text is first */
+
+    /* --- FIX FOR TEXT OVERFLOW --- */
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    /* ----------------------------- */
 }
 
 /* Ensure dropdown appears on top */

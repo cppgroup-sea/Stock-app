@@ -10,7 +10,7 @@
       body { display: flex; justify-content: center; align-items: center; height: 100vh; }
       article { width: 100%; max-width: 400px; }
       .login-header { text-align: center; margin-bottom: 1.5rem; }
-      .login-header img { max-width: 150px; height: auto; margin-bottom: 1rem; } /* ปรับขนาดโลโก้ */
+      .login-header img { max-width: 150px; height: auto; margin-bottom: 1rem; }
       .login-header h2 { margin-bottom: 0; }
     </style>
 </head>
@@ -18,7 +18,8 @@
     <main class="container">
       <article>
         <div class="login-header">
-          <img src="https://i.postimg.cc/W3NjTYM3/CSC.png" alt="Company Logo"> <h2>เข้าสู่ระบบจัดการStock</h2>
+          <img src="https://i.postimg.cc/W3NjTYM3/CSC.png" alt="Company Logo">
+          <h2>เข้าสู่ระบบจัดการสต๊อก</h2>
         </div>
         <form id="loginForm">
           <label for="username">ชื่อผู้ใช้</label>
@@ -31,7 +32,7 @@
       </article>
     </main>
     <script>
-      const API_URL = "https://script.google.com/macros/s/AKfycbwfpl1zo1rKf7-4pszn1Y4trQY1UV1Vj5Hr6Lj2u7M0ZzXqVWrqEAce8gp5NqikhS8Rwg/exec"; // <-- PASTE YOUR URL HERE
+      const API_URL = "https://script.google.com/macros/s/AKfycbypzTpL5HNNle6QFt5X8-KpN4ougBX9gDZHqHWUVdl6eSEUKVKM0eJoxRE4ibgc0LkbzA/exec";
 
       document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -39,10 +40,8 @@
         const errorMessage = document.getElementById('error-message');
         loginButton.setAttribute('aria-busy', 'true');
         errorMessage.style.display = 'none';
-
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-
         try {
           const res = await fetch(API_URL, {
             method: 'POST',
@@ -50,7 +49,6 @@
             body: JSON.stringify({ action: 'checkLogin', username, password })
           });
           const result = await res.json();
-
           if (result.status === 'success' && result.data.loggedIn) {
             sessionStorage.setItem('stockUser', result.data.user);
             sessionStorage.setItem('stockUserRole', result.data.role);

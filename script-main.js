@@ -3,6 +3,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwfpl1zo1rKf7-4pszn1Y4t
 const loggedInUser = sessionStorage.getItem('stockUser');
 if (!loggedInUser) window.location.href = 'index.html';
 
+// Store products in a global variable for easy access
+let productList = [];
+
 async function callApi(action, payload = {}) {
   const response = await fetch(API_URL, {
       method: 'POST',
@@ -15,69 +18,71 @@ async function callApi(action, payload = {}) {
 }
 
 function populateProducts(products) {
-  const select2Data = products.map(product => ({
-    id: product.id,
-    text: `${product.id} - ${product.name}`,
-    unit: product.unit
-  }));
+  productList = products; // Save the product list
+  const dataList = document.getElementById('productList');
+  dataList.innerHTML = ''; // Clear previous options
 
-  const $productSelect = $('#productName');
-  
-  $productSelect.select2({
-    // placeholder: '-- กรุณาเลือกสินค้า --', // We are removing this line
-    allowClear: true,
-    data: select2Data
-  });
-
-  // This line is no longer needed if we don't have a placeholder
-  // $productSelect.val(null).trigger('change'); 
-
-  $productSelect.on('select2:select', function (e) {
-    const data = e.params.data;
-    if (data) {
-      $('#productID').val(data.id || '');
-      $('#unit').val(data.unit || '');
-    }
-  });
-
-  $productSelect.on('select2:unselect', function (e) {
-    $('#productID').val('');
-    $('#unit').val('');
+  products.forEach(product => {
+    const option = document.createElement('option');
+    option.value = `${product.id} - ${product.name}`;
+    dataList.appendChild(option);
   });
 }
 
-$('#stockForm').on('submit', async (e) => {
+// Event listener for the new input field
+document.getElementById('productSearch').addEventListener('input', function(e) {
+  const inputValue = e.target.value;
+  const productIDInput = document.getElementById('productID');
+  const unitInput = document.getElementById('unit');
+
+  // Find the selected product from our global list
+  const selectedProduct = productList.find(p => `${p.id} - ${p.name}` === inputValue);
+
+  if (selectedProduct) {
+    productIDInput.value = selectedProduct.id;
+    unitInput.value = selectedProduct.unit;
+  } else {
+    // Clear if the input doesn't match any full product name
+    productIDInput.value = '';
+    unitInput.value = '';
+  }
+});
+
+
+document.getElementById('stockForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const submitButton = $('#submitButton');
-  submitButton.text('กำลังบันทึก...');
-  submitButton.prop('disabled', true);
+  const submitButton = document.getElementById('submitButton');
+  submitButton.setAttribute('aria-busy', 'true');
   
   const formData = {
-    productName: $('#productName').select2('data')[0] ? $('#productName').select2('data')[0].text : '',
-    productID: $('#productID').val(),
-    lot: $('#lot').val(),
-    quantity: $('#quantity').val(),
-    unit: $('#unit').val(),
-    type: $('input[name="type"]:checked').val(),
-    remarks: $('#remarks').val()
+    productName: document.getElementById('productSearch').value,
+    productID: document.getElementById('productID').value,
+    lot: document.getElementById('lot').value,
+    quantity: document.getElementById('quantity').value,
+    unit: document.getElementById('unit').value,
+    type: document.querySelector('input[name="type"]:checked').value,
+    remarks: document.getElementById('remarks').value
   };
+
+  // Simple validation
+  if (!formData.productID) {
+      alert("กรุณาเลือกรายการสินค้าที่ถูกต้องจากรายการ");
+      submitButton.removeAttribute('aria-busy');
+      return;
+  }
   
   try {
     const result = await callApi('recordTransaction', formData);
     alert(result.message);
-    $('#stockForm')[0].reset();
-    $('#productName').val(null).trigger('change');
-    $('#productID').val('');
-    $('#unit').val('');
+    document.getElementById('stockForm').reset();
   } catch (error) {
     alert('เกิดข้อผิดพลาด: ' + error.message);
   } finally {
-    submitButton.text('บันทึกรายการ');
-    submitButton.prop('disabled', false);
+    submitButton.removeAttribute('aria-busy');
   }
 });
 
-$(document).ready(async () => {
+window.addEventListener('load', async () => {
   try {
     const products = await callApi('getProducts');
     populateProducts(products);

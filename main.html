@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>บันทึกStock</title>
+    <title>บันทึกสต๊อก</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <main class="container">
       <div class="card">
-        <h3>บันทึกรายการStock</h3>
+        <h3>บันทึกรายการสต๊อก</h3>
         <form id="stockForm">
-          <label for="productName">รายการสินค้า (พิมพ์เพื่อค้นหา)</label>
-          <select id="productName" name="productName" style="width: 100%;" required></select>
+          
+          <label for="productSearch">รายการสินค้า (พิมพ์เพื่อค้นหา)</label>
+          <input type="text" id="productSearch" list="productList" name="productSearch" autocomplete="off" required>
+          <datalist id="productList"></datalist>
+
           <div class="grid">
             <label for="productID">รหัสสินค้า<input type="text" id="productID" name="productID" readonly required></label>
             <label for="lot">ล๊อต (Lot)<input type="text" id="lot" name="lot" required></label>
@@ -34,8 +36,6 @@
       </div>
     </main>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="navbar.js"></script>
     <script src="script-main.js"></script>
 </body>

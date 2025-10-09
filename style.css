@@ -5,13 +5,11 @@
   --fb-border-color: #DADDE1;
   --primary: var(--fb-blue);
 }
-
 body {
   background-color: var(--fb-bg-grey);
   color: #050505;
   font-family: sans-serif;
 }
-
 nav.navbar {
   background-color: var(--fb-card-bg);
   border-bottom: 1px solid var(--fb-border-color);
@@ -20,12 +18,10 @@ nav.navbar {
   top: 0;
   z-index: 1000;
 }
-
 main.container {
   padding: 2rem;
   max-width: 960px;
 }
-
 .card {
   background-color: var(--fb-card-bg);
   border: 1px solid var(--fb-border-color);
@@ -34,55 +30,12 @@ main.container {
   padding: 1.5rem;
   margin-bottom: 2rem;
 }
-
 table {
-    background-color: var(--fb-card-bg);
+  background-color: var(--fb-card-bg);
 }
-
-/* === DEFINITIVE SELECT2 STYLING FIX === */
-
-/* 1. Set the container height and use Flexbox for alignment */
-.select2-container .select2-selection--single { 
-    height: 3.125rem !important;
-    border: 1px solid #c7c7c7 !important; 
-    border-radius: 0.25rem !important;
-    display: flex !important;
-    align-items: center !important;
-    padding: 0 !important; /* Reset parent padding */
-}
-
-/* 2. Style the container for the selected text */
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    /* Prevent text from overflowing */
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
-    
-    /* Set specific padding for the text itself */
-    padding-left: 0.75rem !important;
-    padding-right: 25px !important; /* Make space for the arrow */
-}
-
-/* 3. Vertically align the arrow */
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 100% !important;
-    position: static !important; /* Let Flexbox handle positioning */
-    display: flex;
-    align-items: center;
-    padding-right: 0.75rem;
-    order: 2; /* Move arrow to the end */
-    margin-left: auto;
-}
-
-/* 4. Ensure the dropdown panel appears on top of everything */
-.select2-dropdown {
-    z-index: 9999 !important;
-}
-
-/* 5. Ensure dropdown options are fully visible */
-.select2-results__option {
-    padding: 8px 12px !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+.filter-form { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+  gap: 1rem; 
+  align-items: end; 
 }

@@ -39,29 +39,48 @@ table {
     background-color: var(--fb-card-bg);
 }
 
-/* === DEFINITIVE SELECT2 STYLING FIX === */
+/* === DEFINITIVE SELECT2 STYLING RESET AND FIX === */
 
-/* Match the height of other form inputs and use Flexbox for alignment */
+/* 1. Main container styling */
 .select2-container .select2-selection--single { 
-    height: 3.125rem !important; 
+    height: 3.125rem !important; /* Match other inputs' height */
     display: flex !important;
     align-items: center !important;
-    padding: 0 !important; /* Reset parent padding */
 }
 
-/* Style the container for the selected text */
+/* 2. Selected text styling */
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-    /* Prevent text from overflowing */
+    color: #444;
+    padding-left: 0.75rem !important; /* Align with other inputs */
+    padding-right: 30px !important; /* Make space for the arrow */
+
+    /* Fix for text overflow ("...") */
+    white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
-    white-space: nowrap !important;
-    
-    /* Set specific padding for the text itself */
-    padding-left: 0.75rem !important;
-    padding-right: 25px !important; /* Make space for the arrow */
 }
 
-/* Ensure the dropdown panel appears on top of everything */
+/* 3. Arrow styling */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100% !important;
+    position: absolute !important;
+    top: 0 !important;
+    right: 5px !important;
+    width: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* 4. Dropdown panel z-index */
 .select2-dropdown {
     z-index: 9999 !important;
+}
+
+/* 5. Dropdown options styling */
+.select2-results__option {
+    padding: 6px 12px !important; /* Ensure options have enough padding */
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }

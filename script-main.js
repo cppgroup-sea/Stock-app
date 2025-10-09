@@ -24,16 +24,13 @@ function populateProducts(products) {
   const $productSelect = $('#productName');
   
   $productSelect.select2({
-    placeholder: '-- กรุณาเลือกสินค้า --',
+    // placeholder: '-- กรุณาเลือกสินค้า --', // We are removing this line
     allowClear: true,
-    data: select2Data,
-    // THIS IS THE CORRECT ARCHITECTURAL FIX:
-    // It tells Select2 to render the dropdown attached to the main body,
-    // completely escaping the card's stacking context.
-    dropdownParent: $('body')
+    data: select2Data
   });
 
-  $productSelect.val(null).trigger('change');
+  // This line is no longer needed if we don't have a placeholder
+  // $productSelect.val(null).trigger('change'); 
 
   $productSelect.on('select2:select', function (e) {
     const data = e.params.data;

@@ -41,38 +41,45 @@ table {
 
 /* === DEFINITIVE SELECT2 STYLING FIX === */
 
-/* 1. กำหนดความสูงของกล่อง Dropdown ให้ตายตัว */
+/* 1. Set the container height and use Flexbox for alignment */
 .select2-container .select2-selection--single { 
-    height: 3.125rem !important; 
+    height: 3.125rem !important;
+    border: 1px solid #c7c7c7 !important; 
+    border-radius: 0.25rem !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
-/* 2. บังคับให้ตัวหนังสือที่ถูกเลือกอยู่กึ่งกลางแนวตั้ง */
+/* 2. Style the container for the selected text */
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-    /* ใช้ line-height เท่ากับความสูงของกล่องเพื่อจัดกึ่งกลาง */
-    line-height: 3.125rem !important;
-    padding-left: 0.75rem !important;
-    
-    /* ป้องกันข้อความยาวเกินไป */
+    color: #444;
+    padding-left: 0.75rem !important; 
+    padding-right: 30px !important; 
+
+    /* Fix for text overflow ("...") */
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }
 
-/* 3. จัดตำแหน่งลูกศรให้สวยงาม */
+/* 3. Style the arrow */
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 3.125rem !important;
+    height: 100% !important;
     position: absolute !important;
-    top: 1px !important;
-    right: 1px !important;
+    top: 0 !important;
+    right: 5px !important;
     width: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
-/* 4. ทำให้ Dropdown ที่เปิดออกมาอยู่เหนือสุดเสมอ */
+/* 4. Ensure dropdown panel appears on top */
 .select2-dropdown {
     z-index: 9999 !important;
 }
 
-/* 5. ทำให้ตัวเลือกใน Dropdown แสดงผลเต็มบรรทัด */
+/* 5. Style dropdown options */
 .select2-results__option {
     padding: 8px 12px !important;
     white-space: nowrap !important;

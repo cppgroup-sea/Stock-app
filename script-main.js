@@ -1,51 +1,20 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwfpl1zo1rKf7-4pszn1Y4trQY1UV1Vj5Hr6Lj2u7M0ZzXqVWrqEAce8gp5NqikhS8Rwg/exec"; // <-- PASTE YOUR URL HERE
+const API_URL = "https://script.google.com/macros/s/AKfycbziJt0ipRwluqw7w2MvFnmROYZdSNAj3deDbAF7f0EWefdxAXp0UyiG1M7SfzfeWLAM/exec"; // <-- PASTE YOUR URL HERE
 
 const loggedInUser = sessionStorage.getItem('stockUser');
 if (!loggedInUser) window.location.href = 'index.html';
 
-// Store products in a global variable for easy access
 let productList = [];
 
 async function callApi(action, payload = {}) {
-  const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {'Content-Type': 'text/plain;charset=utf-8'},
-      body: JSON.stringify({ action, payload, user: loggedInUser })
-  });
-  const result = await response.json();
-  if (result.status === 'error') throw new Error(result.message);
-  return result.data;
+  // ... (same as before) ...
 }
 
 function populateProducts(products) {
-  productList = products; // Save the product list
-  const dataList = document.getElementById('productList');
-  dataList.innerHTML = ''; // Clear previous options
-
-  products.forEach(product => {
-    const option = document.createElement('option');
-    option.value = `${product.id} - ${product.name}`;
-    dataList.appendChild(option);
-  });
+  // ... (same as before) ...
 }
 
-// Event listener for the new input field
 document.getElementById('productSearch').addEventListener('input', function(e) {
-  const inputValue = e.target.value;
-  const productIDInput = document.getElementById('productID');
-  const unitInput = document.getElementById('unit');
-
-  // Find the selected product from our global list
-  const selectedProduct = productList.find(p => `${p.id} - ${p.name}` === inputValue);
-
-  if (selectedProduct) {
-    productIDInput.value = selectedProduct.id;
-    unitInput.value = selectedProduct.unit;
-  } else {
-    // Clear if the input doesn't match any full product name
-    productIDInput.value = '';
-    unitInput.value = '';
-  }
+  // ... (same as before) ...
 });
 
 
@@ -58,13 +27,13 @@ document.getElementById('stockForm').addEventListener('submit', async (e) => {
     productName: document.getElementById('productSearch').value,
     productID: document.getElementById('productID').value,
     lot: document.getElementById('lot').value,
+    expDate: document.getElementById('expDate').value, // <-- Get the new date value
     quantity: document.getElementById('quantity').value,
     unit: document.getElementById('unit').value,
     type: document.querySelector('input[name="type"]:checked').value,
     remarks: document.getElementById('remarks').value
   };
 
-  // Simple validation
   if (!formData.productID) {
       alert("กรุณาเลือกรายการสินค้าที่ถูกต้องจากรายการ");
       submitButton.removeAttribute('aria-busy');
@@ -83,11 +52,5 @@ document.getElementById('stockForm').addEventListener('submit', async (e) => {
 });
 
 window.addEventListener('load', async () => {
-  try {
-    const products = await callApi('getProducts');
-    populateProducts(products);
-  } catch (error) {
-    console.error('Failed to load products:', error);
-    alert('ไม่สามารถโหลดรายการสินค้าได้');
-  }
+  // ... (same as before) ...
 });

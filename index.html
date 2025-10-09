@@ -9,12 +9,17 @@
     <style>
       body { display: flex; justify-content: center; align-items: center; height: 100vh; }
       article { width: 100%; max-width: 400px; }
+      .login-header { text-align: center; margin-bottom: 1.5rem; }
+      .login-header img { max-width: 150px; height: auto; margin-bottom: 1rem; } /* ปรับขนาดโลโก้ */
+      .login-header h2 { margin-bottom: 0; }
     </style>
 </head>
 <body>
     <main class="container">
       <article>
-        <h2 style="text-align: center;">เข้าสู่ระบบจัดการStock</h2>
+        <div class="login-header">
+          <img src="https://i.postimg.cc/W3NjTYM3/CSC.png" alt="Company Logo"> <h2>เข้าสู่ระบบจัดการStock</h2>
+        </div>
         <form id="loginForm">
           <label for="username">ชื่อผู้ใช้</label>
           <input type="text" id="username" name="username" required>

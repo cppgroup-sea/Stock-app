@@ -3,6 +3,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwfpl1zo1rKf7-4pszn1Y4t
 const loggedInUser = sessionStorage.getItem('stockUser');
 if (!loggedInUser) window.location.href = 'index.html';
 
+let productList = []; // Store products globally
+
 async function callApi(action, payload = {}) {
   const response = await fetch(API_URL, {
       method: 'POST',
@@ -15,46 +17,57 @@ async function callApi(action, payload = {}) {
 }
 
 function populateProductFilter(products) {
-  const select2Data = products.map(product => ({
-    id: product.id,
-    text: `${product.id} - ${product.name}`
-  }));
-  select2Data.unshift({ id: 'all', text: 'สินค้าทั้งหมด' });
+  productList = products; // Save for later
+  const dataList = document.getElementById('productList');
+  dataList.innerHTML = ''; // Clear previous options
 
-  $('#productId').select2({
-    placeholder: 'เลือกสินค้า',
-    data: select2Data
+  // Add an "All" option to the input field's placeholder or logic
+  document.getElementById('productSearch').placeholder = 'พิมพ์เพื่อค้นหา หรือเว้นว่างเพื่อดูทั้งหมด';
+
+  products.forEach(product => {
+    const option = document.createElement('option');
+    option.value = `${product.id} - ${product.name}`;
+    dataList.appendChild(option);
   });
 }
 
-$('#filterForm').on('submit', async (e) => {
+document.getElementById('filterForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const tableBody = $('#tableBody');
-  const loading = $('#loading');
-  const noResults = $('#noResults');
-  const resultsCard = $('#resultsCard');
+  const tableBody = document.getElementById('tableBody');
+  const loading = document.getElementById('loading');
+  const noResults = document.getElementById('noResults');
+  const resultsCard = document.getElementById('resultsCard');
 
-  resultsCard.show();
-  loading.show();
-  noResults.hide();
-  tableBody.html('');
+  resultsCard.style.display = 'block';
+  loading.style.display = 'block';
+  noResults.style.display = 'none';
+  tableBody.innerHTML = '';
 
+  const productSearchValue = document.getElementById('productSearch').value;
+  // Find the product ID from the selected value
+  const selectedProduct = productList.find(p => `${p.id} - ${p.name}` === productSearchValue);
+  
   const filters = {
-    productId: $('#productId').val(),
-    startDate: $('#startDate').val(),
-    endDate: $('#endDate').val()
+    productId: selectedProduct ? selectedProduct.id : null, // Send ID or null
+    startDate: document.getElementById('startDate').value,
+    endDate: document.getElementById('endDate').value
   };
+  
+  // If input is empty, treat as 'all'
+  if (!productSearchValue) {
+    filters.productId = 'all';
+  }
 
   try {
     const historyData = await callApi('getTransactionHistory', filters);
     
     if (historyData.length === 0) {
-      noResults.show();
+      noResults.style.display = 'block';
     } else {
       historyData.forEach(row => {
-        const tr = $('<tr>');
+        const tr = document.createElement('tr');
         const timestamp = new Date(row[0]).toLocaleString('th-TH');
-        tr.html(`
+        tr.innerHTML = `
           <td>${timestamp}</td>
           <td>${row[1]}</td>
           <td>${row[2]}</td>
@@ -64,24 +77,25 @@ $('#filterForm').on('submit', async (e) => {
           <td>${row[6]}</td>
           <td>${row[7]}</td>
           <td>${row[8] || ''}</td>
-        `);
-        tableBody.append(tr);
+        `;
+        tableBody.appendChild(tr);
       });
     }
   } catch (error) {
     console.error('Failed to get history:', error);
-    noResults.text('เกิดข้อผิดพลาดในการค้นหา').show();
+    noResults.textContent = 'เกิดข้อผิดพลาดในการค้นหา';
+    noResults.style.display = 'block';
   } finally {
-    loading.hide();
+    loading.style.display = 'none';
   }
 });
 
-$(document).ready(async () => {
+window.addEventListener('load', async () => {
   try {
     const products = await callApi('getProducts');
     populateProductFilter(products);
   } catch (error) {
-    console.error('Failed to load products:', error);
+    console.error('Failed to load products for filter:', error);
     alert('ไม่สามารถโหลดรายการสินค้าสำหรับค้นหาได้');
   }
 });

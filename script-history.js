@@ -17,9 +17,9 @@ async function callApi(action, payload = {}) {
 }
 
 function populateProductFilter(products) {
-  productList = products; // Save for later
+  productList = products; 
   const dataList = document.getElementById('productList');
-  dataList.innerHTML = ''; // Clear previous options
+  dataList.innerHTML = ''; 
 
   // Add an "All" option to the input field's placeholder or logic
   document.getElementById('productSearch').placeholder = 'พิมพ์เพื่อค้นหา หรือเว้นว่างเพื่อดูทั้งหมด';
@@ -44,16 +44,14 @@ document.getElementById('filterForm').addEventListener('submit', async (e) => {
   tableBody.innerHTML = '';
 
   const productSearchValue = document.getElementById('productSearch').value;
-  // Find the product ID from the selected value
   const selectedProduct = productList.find(p => `${p.id} - ${p.name}` === productSearchValue);
   
   const filters = {
-    productId: selectedProduct ? selectedProduct.id : null, // Send ID or null
+    productId: selectedProduct ? selectedProduct.id : null,
     startDate: document.getElementById('startDate').value,
     endDate: document.getElementById('endDate').value
   };
   
-  // If input is empty, treat as 'all'
   if (!productSearchValue) {
     filters.productId = 'all';
   }
@@ -67,16 +65,22 @@ document.getElementById('filterForm').addEventListener('submit', async (e) => {
       historyData.forEach(row => {
         const tr = document.createElement('tr');
         const timestamp = new Date(row[0]).toLocaleString('th-TH');
+        
+        // ** THE FIX IS HERE: Correctly map all 10 columns **
+        // ExpDate is at index 4, Type is at index 5, etc.
+        const expDate = row[4] ? new Date(row[4]).toLocaleDateString('th-TH') : 'N/A';
+
         tr.innerHTML = `
           <td>${timestamp}</td>
           <td>${row[1]}</td>
           <td>${row[2]}</td>
           <td>${row[3]}</td>
-          <td>${row[4]}</td>
+          <td>${expDate}</td>
           <td>${row[5]}</td>
           <td>${row[6]}</td>
           <td>${row[7]}</td>
-          <td>${row[8] || ''}</td>
+          <td>${row[8]}</td>
+          <td>${row[9] || ''}</td>
         `;
         tableBody.appendChild(tr);
       });

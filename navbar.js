@@ -1,14 +1,10 @@
 document.addEventListener("DOMContentLoaded", function() {
   const user = sessionStorage.getItem('stockUser');
   const role = sessionStorage.getItem('stockUserRole');
-
-  if (!user) return; 
-
+  if (!user) return;
   const navbarHTML = `
     <nav class="navbar container-fluid">
-      <ul>
-        <li><strong>Stock System</strong></li>
-      </ul>
+      <ul><li><strong>Stock System</strong></li></ul>
       <ul>
         ${role === 'Admin' ? `
           <li><a href="main.html">บันทึกสต๊อก</a></li>
@@ -24,9 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
       </ul>
     </nav>
   `;
-
   document.body.insertAdjacentHTML('afterbegin', navbarHTML);
-
   document.getElementById('logoutButtonNav').addEventListener('click', (e) => {
     e.preventDefault();
     sessionStorage.clear();

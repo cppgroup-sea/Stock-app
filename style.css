@@ -52,8 +52,6 @@ table {
 .select2-container--default .select2-selection--single .select2-selection__rendered {
     color: #495057;
     line-height: 3.125rem !important; /* Vertically centers text */
-    
-    /* THE FIX IS HERE: Adjust padding to match other inputs */
     padding-left: 0.75rem !important; 
     padding-right: 30px !important; 
 

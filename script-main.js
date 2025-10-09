@@ -6,17 +6,42 @@ if (!loggedInUser) window.location.href = 'index.html';
 let productList = [];
 
 async function callApi(action, payload = {}) {
-  // ... (same as before) ...
+  const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action, payload, user: loggedInUser })
+  });
+  const result = await response.json();
+  if (result.status === 'error') throw new Error(result.message);
+  return result.data;
 }
 
 function populateProducts(products) {
-  // ... (same as before) ...
+  productList = products; 
+  const dataList = document.getElementById('productList');
+  dataList.innerHTML = ''; 
+
+  products.forEach(product => {
+    const option = document.createElement('option');
+    option.value = `${product.id} - ${product.name}`;
+    dataList.appendChild(option);
+  });
 }
 
 document.getElementById('productSearch').addEventListener('input', function(e) {
-  // ... (same as before) ...
-});
+  const inputValue = e.target.value;
+  const productIDInput = document.getElementById('productID');
+  const unitInput = document.getElementById('unit');
+  const selectedProduct = productList.find(p => `${p.id} - ${p.name}` === inputValue);
 
+  if (selectedProduct) {
+    productIDInput.value = selectedProduct.id;
+    unitInput.value = selectedProduct.unit;
+  } else {
+    productIDInput.value = '';
+    unitInput.value = '';
+  }
+});
 
 document.getElementById('stockForm').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -27,7 +52,7 @@ document.getElementById('stockForm').addEventListener('submit', async (e) => {
     productName: document.getElementById('productSearch').value,
     productID: document.getElementById('productID').value,
     lot: document.getElementById('lot').value,
-    expDate: document.getElementById('expDate').value, // <-- Get the new date value
+    expDate: document.getElementById('expDate').value,
     quantity: document.getElementById('quantity').value,
     unit: document.getElementById('unit').value,
     type: document.querySelector('input[name="type"]:checked').value,
@@ -52,5 +77,11 @@ document.getElementById('stockForm').addEventListener('submit', async (e) => {
 });
 
 window.addEventListener('load', async () => {
-  // ... (same as before) ...
+  try {
+    const products = await callApi('getProducts');
+    populateProducts(products);
+  } catch (error) {
+    console.error('Failed to load products:', error);
+    alert('ไม่สามารถโหลดรายการสินค้าได้');
+  }
 });

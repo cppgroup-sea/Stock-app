@@ -39,43 +39,29 @@ table {
     background-color: var(--fb-card-bg);
 }
 
-/* === FINAL SELECT2 STYLING FIX === */
+/* === DEFINITIVE SELECT2 STYLING FIX === */
 
-/* Set the container height and use Flexbox for alignment */
+/* Match the height of other form inputs and use Flexbox for alignment */
 .select2-container .select2-selection--single { 
-    height: 3.125rem !important;
-    border: 1px solid #c7c7c7 !important; 
-    border-radius: 0.25rem !important;
+    height: 3.125rem !important; 
     display: flex !important;
     align-items: center !important;
-    padding: 0 !important;
+    padding: 0 !important; /* Reset parent padding */
 }
 
-/* Vertically align the arrow */
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 100% !important;
-    position: static !important;
-    display: flex;
-    align-items: center;
-    padding-right: 0.75rem;
-    order: 2; /* Move arrow to the end */
-    margin-left: auto;
-}
-
-/* Style the selected text's container */
+/* Style the container for the selected text */
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-    padding-left: 0.75rem !important;
-    padding-right: 0 !important;
-    order: 1; /* Ensure text is first */
-
-    /* --- FIX FOR TEXT OVERFLOW --- */
+    /* Prevent text from overflowing */
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
-    /* ----------------------------- */
+    
+    /* Set specific padding for the text itself */
+    padding-left: 0.75rem !important;
+    padding-right: 25px !important; /* Make space for the arrow */
 }
 
-/* Ensure dropdown appears on top */
+/* Ensure the dropdown panel appears on top of everything */
 .select2-dropdown {
     z-index: 9999 !important;
 }

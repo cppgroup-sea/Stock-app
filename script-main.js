@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbziJt0ipRwluqw7w2MvFnmROYZdSNAj3deDbAF7f0EWefdxAXp0UyiG1M7SfzfeWLAM/exec"; // <-- PASTE YOUR URL HERE
+const API_URL = "https://script.google.com/macros/s/AKfycbypzTpL5HNNle6QFt5X8-KpN4ougBX9gDZHqHWUVdl6eSEUKVKM0eJoxRE4ibgc0LkbzA/exec";
 
 const loggedInUser = sessionStorage.getItem('stockUser');
 if (!loggedInUser) window.location.href = 'index.html';
@@ -17,10 +17,10 @@ async function callApi(action, payload = {}) {
 }
 
 function populateProducts(products) {
-  productList = products; 
+  productList = products;
   const dataList = document.getElementById('productList');
-  dataList.innerHTML = ''; 
-
+  if (!dataList) return;
+  dataList.innerHTML = '';
   products.forEach(product => {
     const option = document.createElement('option');
     option.value = `${product.id} - ${product.name}`;
@@ -28,12 +28,11 @@ function populateProducts(products) {
   });
 }
 
-document.getElementById('productSearch').addEventListener('input', function(e) {
+document.getElementById('productSearch')?.addEventListener('input', function(e) {
   const inputValue = e.target.value;
   const productIDInput = document.getElementById('productID');
   const unitInput = document.getElementById('unit');
   const selectedProduct = productList.find(p => `${p.id} - ${p.name}` === inputValue);
-
   if (selectedProduct) {
     productIDInput.value = selectedProduct.id;
     unitInput.value = selectedProduct.unit;
@@ -43,11 +42,10 @@ document.getElementById('productSearch').addEventListener('input', function(e) {
   }
 });
 
-document.getElementById('stockForm').addEventListener('submit', async (e) => {
+document.getElementById('stockForm')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const submitButton = document.getElementById('submitButton');
   submitButton.setAttribute('aria-busy', 'true');
-  
   const formData = {
     productName: document.getElementById('productSearch').value,
     productID: document.getElementById('productID').value,
@@ -58,13 +56,11 @@ document.getElementById('stockForm').addEventListener('submit', async (e) => {
     type: document.querySelector('input[name="type"]:checked').value,
     remarks: document.getElementById('remarks').value
   };
-
   if (!formData.productID) {
       alert("กรุณาเลือกรายการสินค้าที่ถูกต้องจากรายการ");
       submitButton.removeAttribute('aria-busy');
       return;
   }
-  
   try {
     const result = await callApi('recordTransaction', formData);
     alert(result.message);

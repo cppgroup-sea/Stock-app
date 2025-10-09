@@ -1,5 +1,5 @@
 // !================== PASTE YOUR APPS SCRIPT URL HERE ==================!
-const API_URL = "https://script.google.com/macros/s/AKfycbypzTpL5HNNle6QFt5X8-KpN4ougBX9gDZHqHWUVdl6eSEUKVKM0eJoxRE4ibgc0LkbzA/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxOJg5gaOEL0n1JuKovNmqTKiHdEmyYk7S5N0qaahF3DPHDID1x1n55bnyBaTIDK_hStw/exec";
 // !=====================================================================!
 
 const loggedInUser = sessionStorage.getItem('stockUser');

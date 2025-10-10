@@ -30,23 +30,13 @@ function populateProducts(products) {
 }
 
 // Function to find EXP date automatically
-async function findExpDate() {
+function findExpDate() {
   const selectedProduct = productList.find(p => `${p.id} - ${p.name}` === document.getElementById('productSearch').value);
   const lotValue = document.getElementById('lot').value;
   const typeValue = document.querySelector('input[name="type"]:checked').value;
   const expDateInput = document.getElementById('expDate');
 
-  if (typeValue === 'ตัดออก' && selectedProduct && lotValue) {
-    // **THE FIX:** If the summary data hasn't been loaded yet, fetch it now.
-    if (stockSummary.length === 0) {
-      try {
-        stockSummary = await callApi('getStockSummaryData');
-      } catch (e) {
-        console.error("Could not fetch stock summary for EXP date lookup.");
-        return; // Exit if fetching fails
-      }
-    }
-    
+  if (typeValue === 'ตัดออก' && selectedProduct && lotValue && stockSummary.length > 0) {
     const matchingLots = stockSummary
       .filter(row => row[0] === selectedProduct.id && row[2] === lotValue)
       .sort((a, b) => {

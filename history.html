@@ -6,6 +6,11 @@
     <title>ประวัติรายการ</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+      .filter-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end; }
+      .export-button { margin-bottom: 1rem; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
     <main class="container">
@@ -30,23 +35,14 @@
       </div>
 
       <div class="card" id="resultsCard" style="display:none;">
-          <h4>ผลการค้นหา</h4>
+          <header style="display: flex; justify-content: space-between; align-items: center;">
+            <h4>ผลการค้นหา</h4>
+            <button id="exportButton" class="secondary export-button">Export to Excel</button>
+          </header>
+          
           <div style="overflow-x:auto;">
             <table id="historyTable">
-              <thead>
-                <tr>
-                  <th>Timestamp</th>
-                  <th>รหัสสินค้า</th>
-                  <th>ชื่อสินค้า</th>
-                  <th>ล๊อต</th>
-                  <th>วันหมดอายุ</th>
-                  <th>ประเภท</th>
-                  <th>จำนวน</th>
-                  <th>หน่วย</th>
-                  <th>ผู้ใช้</th>
-                  <th>หมายเหตุ</th>
-                </tr>
-              </thead>
+              <thead><tr><th>Timestamp</th><th>รหัสสินค้า</th><th>ชื่อสินค้า</th><th>ล๊อต</th><th>วันหมดอายุ</th><th>ประเภท</th><th>จำนวน</th><th>หน่วย</th><th>ผู้ใช้</th><th>หมายเหตุ</th></tr></thead>
               <tbody id="tableBody"></tbody>
             </table>
           </div>
@@ -54,7 +50,22 @@
           <p id="noResults" style="display: none;">ไม่พบข้อมูลตามเงื่อนไขที่กำหนด</p>
       </div>
     </main>
+
     <script src="navbar.js"></script>
     <script src="script-history.js"></script>
+    <script>
+      // 3. Add Export Functionality
+      document.getElementById('exportButton').addEventListener('click', function() {
+        // Get the table element
+        const table = document.getElementById("historyTable");
+        // Convert the table to a workbook object
+        const wb = XLSX.utils.table_to_book(table, {sheet: "History"});
+        // Generate a file name with today's date
+        const today = new Date().toISOString().slice(0, 10);
+        const fileName = `Stock_History_${today}.xlsx`;
+        // Write the workbook and trigger a download
+        XLSX.writeFile(wb, fileName);
+      });
+    </script>
 </body>
 </html>

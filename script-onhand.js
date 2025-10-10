@@ -60,3 +60,4 @@ window.addEventListener('load', async () => {
     loadingIndicator.removeAttribute('aria-busy');
   }
 });
+

@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwyKoqeyTEEfkYZGy78yysxjCVKRiD6qMGn1wYfoBC0k2YOk9ai-c1IxkAwLac1YdDUbg/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxMZ7BGlvwh9ZeUAKT8F0xshjcyjhjQkw2ijFdfrCeB73AX3DXr5HWeaTiKztaUH5N45w/exec";
 
 const loggedInUser = sessionStorage.getItem('stockUser');
 if (!loggedInUser) window.location.href = 'index.html';

@@ -30,38 +30,38 @@ function populateProducts(products) {
 }
 
 // Function to find EXP date automatically
-async function findExpDate() {
+function findExpDate() {
   const selectedProduct = productList.find(p => `${p.id} - ${p.name}` === document.getElementById('productSearch').value);
   const lotValue = document.getElementById('lot').value;
   const typeValue = document.querySelector('input[name="type"]:checked').value;
   const expDateInput = document.getElementById('expDate');
 
-  if (typeValue === 'ตัดออก' && selectedProduct && lotValue) {
-    if (stockSummary.length === 0) {
-      try {
-        stockSummary = await callApi('getStockSummaryData');
-      } catch (e) {
-        console.error("Could not fetch stock summary for EXP date lookup.");
-        return;
-      }
-    }
-    
+  if (typeValue === 'ตัดออก' && selectedProduct && lotValue && stockSummary.length > 0) {
     const matchingLots = stockSummary
       .filter(row => row[0] === selectedProduct.id && row[2] === lotValue)
       .sort((a, b) => {
-        const timeA = a[3] instanceof Date ? a[3].getTime() : Infinity;
-        const timeB = b[3] instanceof Date ? b[3].getTime() : Infinity;
+        const timeA = (a[3] && !isNaN(new Date(a[3]).getTime())) ? new Date(a[3]).getTime() : Infinity;
+        const timeB = (b[3] && !isNaN(new Date(b[3]).getTime())) ? new Date(b[3]).getTime() : Infinity;
         return timeA - timeB;
       });
 
     if (matchingLots.length > 0) {
       const targetExpDate = matchingLots[0][3];
-      if (targetExpDate instanceof Date) {
-        expDateInput.value = targetExpDate.toISOString().split('T')[0];
+      if (targetExpDate) {
+        try {
+          const dateObj = new Date(targetExpDate);
+          // Format date to YYYY-MM-DD for the input[type=date] field
+          expDateInput.value = dateObj.toISOString().split('T')[0];
+        } catch (e) {
+          expDateInput.value = ''; // Clear if date is invalid
+        }
       } else {
-        expDateInput.value = '';
+        expDateInput.value = ''; // Clear if the found lot has no EXP date (N/A)
       }
     }
+  } else if (typeValue === 'รับเข้า') {
+      // Clear the date field when switching back to "Receive"
+      expDateInput.value = '';
   }
 }
 
@@ -113,7 +113,8 @@ document.getElementById('stockForm').addEventListener('submit', async (e) => {
     const result = await callApi('recordTransaction', formData);
     alert(result.message);
     document.getElementById('stockForm').reset();
-    stockSummary = await callApi('getStockSummaryData'); // Refresh summary data after transaction
+    // Refresh summary data cache after a transaction
+    stockSummary = await callApi('getStockSummaryData'); 
   } catch (error) {
     alert('เกิดข้อผิดพลาด: ' + error.message);
   } finally {
@@ -123,9 +124,14 @@ document.getElementById('stockForm').addEventListener('submit', async (e) => {
 
 window.addEventListener('load', async () => {
   try {
-    const products = await callApi('getProducts');
+    // Fetch both products and stock summary on page load
+    const [products, summary] = await Promise.all([
+      callApi('getProducts'),
+      callApi('getStockSummaryData')
+    ]);
+    productList = products;
+    stockSummary = summary; // Cache the summary data
     populateProducts(products);
-    stockSummary = await callApi('getStockSummaryData');
   } catch (error) {
     console.error('Failed to load initial data:', error);
     alert('ไม่สามารถโหลดข้อมูลเริ่มต้นได้');

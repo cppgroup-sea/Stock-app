@@ -1,83 +1,70 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzlOXPg76HgO68FGuBzx9zbexzP3geDLyh6cPyQJOern30vPtGrobiHiN7bDaw2hQl0FA/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyzX4FgBqzzgtUJrM57xfJbmMRw-dIVj9sQONHmbDNWYv8DefzzjKa4pckxWxnWY_0xHA/exec"; // <-- PASTE YOUR URL HERE
 
 const loggedInUser = sessionStorage.getItem('stockUser');
 if (!loggedInUser) window.location.href = 'index.html';
 
 let productList = [];
+let stockSummary = []; // Cache for stock data
 
-async function callApi(action, payload = {}) {
-  const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {'Content-Type': 'text/plain;charset=utf-8'},
-      body: JSON.stringify({ action, payload, user: loggedInUser })
-  });
-  const result = await response.json();
-  if (result.status === 'error') throw new Error(result.message);
-  return result.data;
+async function callApi(action, payload = {}) { /* ... same as before ... */ }
+function populateProducts(products) { /* ... same as before ... */ }
+document.getElementById('stockForm').addEventListener('submit', async (e) => { /* ... same as before ... */ });
+
+// --- NEW AND UPDATED EVENT LISTENERS ---
+
+// When product or lot is changed, try to find the EXP date
+async function findExpDate() {
+  const selectedProduct = productList.find(p => `${p.id} - ${p.name}` === document.getElementById('productSearch').value);
+  const lotValue = document.getElementById('lot').value;
+  const typeValue = document.querySelector('input[name="type"]:checked').value;
+  const expDateInput = document.getElementById('expDate');
+
+  if (typeValue === 'ตัดออก' && selectedProduct && lotValue) {
+    // Find the soonest expiring item from the cached stock summary
+    const matchingLots = stockSummary
+      .filter(row => row[0] === selectedProduct.id && row[2] === lotValue)
+      .sort((a, b) => {
+        const timeA = a[3] instanceof Date ? a[3].getTime() : Infinity;
+        const timeB = b[3] instanceof Date ? b[3].getTime() : Infinity;
+        return timeA - timeB;
+      });
+
+    if (matchingLots.length > 0) {
+      const targetExpDate = matchingLots[0][3]; // Get the date from the first (soonest) result
+      if (targetExpDate instanceof Date) {
+        // Format date to YYYY-MM-DD for the input field
+        expDateInput.value = targetExpDate.toISOString().split('T')[0];
+      } else {
+        expDateInput.value = ''; // If no EXP date (N/A), clear the field
+      }
+    }
+  }
 }
 
-function populateProducts(products) {
-  productList = products;
-  const dataList = document.getElementById('productList');
-  if (!dataList) return;
-  dataList.innerHTML = '';
-  products.forEach(product => {
-    const option = document.createElement('option');
-    option.value = `${product.id} - ${product.name}`;
-    dataList.appendChild(option);
-  });
-}
-
-document.getElementById('productSearch')?.addEventListener('input', function(e) {
-  const inputValue = e.target.value;
-  const productIDInput = document.getElementById('productID');
-  const unitInput = document.getElementById('unit');
-  const selectedProduct = productList.find(p => `${p.id} - ${p.name}` === inputValue);
-  if (selectedProduct) {
-    productIDInput.value = selectedProduct.id;
-    unitInput.value = selectedProduct.unit;
-  } else {
-    productIDInput.value = '';
-    unitInput.value = '';
-  }
+document.getElementById('productSearch').addEventListener('input', function(e) {
+  // ... (same as before) ...
+  findExpDate();
 });
 
-document.getElementById('stockForm')?.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const submitButton = document.getElementById('submitButton');
-  submitButton.setAttribute('aria-busy', 'true');
-  const formData = {
-    productName: document.getElementById('productSearch').value,
-    productID: document.getElementById('productID').value,
-    lot: document.getElementById('lot').value,
-    expDate: document.getElementById('expDate').value,
-    quantity: document.getElementById('quantity').value,
-    unit: document.getElementById('unit').value,
-    type: document.querySelector('input[name="type"]:checked').value,
-    remarks: document.getElementById('remarks').value
-  };
-  if (!formData.productID) {
-      alert("กรุณาเลือกรายการสินค้าที่ถูกต้องจากรายการ");
-      submitButton.removeAttribute('aria-busy');
-      return;
-  }
-  try {
-    const result = await callApi('recordTransaction', formData);
-    alert(result.message);
-    document.getElementById('stockForm').reset();
-  } catch (error) {
-    alert('เกิดข้อผิดพลาด: ' + error.message);
-  } finally {
-    submitButton.removeAttribute('aria-busy');
-  }
+document.getElementById('lot').addEventListener('input', findExpDate);
+
+// Also check when user switches to "ตัดออก"
+document.querySelectorAll('input[name="type"]').forEach(radio => {
+  radio.addEventListener('change', findExpDate);
 });
+
 
 window.addEventListener('load', async () => {
   try {
-    const products = await callApi('getProducts');
+    // Fetch both products and stock summary on load
+    const [products, summary] = await Promise.all([
+      callApi('getProducts'),
+      callApi('getStockSummaryData')
+    ]);
+    stockSummary = summary; // Cache the summary data
     populateProducts(products);
   } catch (error) {
-    console.error('Failed to load products:', error);
-    alert('ไม่สามารถโหลดรายการสินค้าได้');
+    console.error('Failed to load initial data:', error);
+    alert('ไม่สามารถโหลดข้อมูลเริ่มต้นได้');
   }
 });

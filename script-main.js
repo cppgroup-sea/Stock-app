@@ -137,4 +137,3 @@ window.addEventListener('load', async () => {
     alert('ไม่สามารถโหลดข้อมูลเริ่มต้นได้');
   }
 });
-

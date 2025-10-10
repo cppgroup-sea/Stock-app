@@ -7,11 +7,11 @@ document.addEventListener("DOMContentLoaded", function() {
       <ul><li><strong>Stock System</strong></li></ul>
       <ul>
         ${role === 'Admin' ? `
-          <li><a href="main.html">บันทึกสต๊อก</a></li>
-          <li><a href="onhand.html">ดูสต๊อก</a></li>
-          <li><a href="history.html">ประวัติ</a></li>
+          <li><a href="main.html">Main</a></li>
+          <li><a href="onhand.html">On Hand</a></li>
+          <li><a href="history.html">History</a></li>
         ` : `
-          <li><a href="onhand.html">ดูสต๊อก</a></li>
+          <li><a href="onhand.html">On Hand</a></li>
         `}
       </ul>
       <ul>

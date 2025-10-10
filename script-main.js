@@ -37,13 +37,12 @@ async function findExpDate() {
   const expDateInput = document.getElementById('expDate');
 
   if (typeValue === 'ตัดออก' && selectedProduct && lotValue) {
-    // **THE FIX:** If the summary data hasn't been loaded yet, fetch it now.
     if (stockSummary.length === 0) {
       try {
         stockSummary = await callApi('getStockSummaryData');
       } catch (e) {
         console.error("Could not fetch stock summary for EXP date lookup.");
-        return; // Exit if fetching fails
+        return;
       }
     }
     
@@ -60,17 +59,15 @@ async function findExpDate() {
       if (targetExpDate) {
         try {
           const dateObj = new Date(targetExpDate);
-          // Format date to YYYY-MM-DD for the input[type=date] field
           expDateInput.value = dateObj.toISOString().split('T')[0];
         } catch (e) {
-          expDateInput.value = ''; // Clear if date is invalid
+          expDateInput.value = '';
         }
       } else {
-        expDateInput.value = ''; // Clear if the found lot has no EXP date (N/A)
+        expDateInput.value = '';
       }
     }
   } else if (typeValue === 'รับเข้า') {
-      // Clear the date field when switching back to "Receive"
       expDateInput.value = '';
   }
 }
@@ -123,7 +120,6 @@ document.getElementById('stockForm').addEventListener('submit', async (e) => {
     const result = await callApi('recordTransaction', formData);
     alert(result.message);
     document.getElementById('stockForm').reset();
-    // Refresh summary data cache after a transaction
     stockSummary = await callApi('getStockSummaryData'); 
   } catch (error) {
     alert('เกิดข้อผิดพลาด: ' + error.message);
@@ -132,18 +128,19 @@ document.getElementById('stockForm').addEventListener('submit', async (e) => {
   }
 });
 
+// ** THE FIX IS HERE **
+// This rewritten 'load' function is more robust.
 window.addEventListener('load', async () => {
   try {
-    // Fetch both products and stock summary on page load
-    const [products, summary] = await Promise.all([
-      callApi('getProducts'),
-      callApi('getStockSummaryData')
-    ]);
-    productList = products;
-    stockSummary = summary; // Cache the summary data
+    // Step 1: Load the essential product list first.
+    const products = await callApi('getProducts');
     populateProducts(products);
+
+    // Step 2: Then, load the stock summary data and cache it.
+    stockSummary = await callApi('getStockSummaryData');
+
   } catch (error) {
     console.error('Failed to load initial data:', error);
-    alert('ไม่สามารถโหลดข้อมูลเริ่มต้นได้');
+    alert('ไม่สามารถโหลดข้อมูลเริ่มต้นได้: ' + error.message);
   }
 });

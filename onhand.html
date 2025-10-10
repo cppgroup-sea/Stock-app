@@ -3,14 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Onhand</title>
+    <title>สรุปสต๊อกคงเหลือ</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <main class="container">
       <div class="card">
-        <h3>สรุปยอดStockคงเหลือ (เรียงตามวันหมดอายุ)</h3>
+        <h3>สรุปยอดสต๊อกคงเหลือ (เรียงตามวันหมดอายุ)</h3>
+        
+        <label for="searchStock">
+          <strong>ค้นหาสินค้า:</strong>
+          <input type="search" id="searchStock" name="search" placeholder="พิมพ์รหัสสินค้าหรือชื่อสินค้าเพื่อค้นหา...">
+        </label>
+        
         <div style="overflow-x:auto;">
           <table id="stockTable">
             <thead>

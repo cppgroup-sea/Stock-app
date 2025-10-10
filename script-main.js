@@ -1,4 +1,4 @@
-const API_URL = https://script.google.com/macros/s/AKfycbyIDFs_fRkvFJ1ubfLAn7_hQLmX5tnZjAIs8wgg9l9jci8Dh2o_OvPH5QCiaW29wTGLkQ/exec"; // <-- PASTE YOUR URL HERE
+const API_URL = "https://script.google.com/macros/s/AKfycbyIDFs_fRkvFJ1ubfLAn7_hQLmX5tnZjAIs8wgg9l9jci8Dh2o_OvPH5QCiaW29wTGLkQ/exec"; // <-- PASTE YOUR URL HERE
 
 const loggedInUser = sessionStorage.getItem('stockUser');
 if (!loggedInUser) window.location.href = 'index.html';
@@ -30,22 +30,13 @@ function populateProducts(products) {
 }
 
 // Function to find EXP date automatically
-async function findExpDate() {
+function findExpDate() {
   const selectedProduct = productList.find(p => `${p.id} - ${p.name}` === document.getElementById('productSearch').value);
   const lotValue = document.getElementById('lot').value;
   const typeValue = document.querySelector('input[name="type"]:checked').value;
   const expDateInput = document.getElementById('expDate');
 
-  if (typeValue === 'ตัดออก' && selectedProduct && lotValue) {
-    if (stockSummary.length === 0) {
-      try {
-        stockSummary = await callApi('getStockSummaryData');
-      } catch (e) {
-        console.error("Could not fetch stock summary for EXP date lookup.");
-        return;
-      }
-    }
-    
+  if (typeValue === 'ตัดออก' && selectedProduct && lotValue && stockSummary.length > 0) {
     const matchingLots = stockSummary
       .filter(row => row[0] === selectedProduct.id && row[2] === lotValue)
       .sort((a, b) => {
@@ -59,15 +50,17 @@ async function findExpDate() {
       if (targetExpDate) {
         try {
           const dateObj = new Date(targetExpDate);
+          // Format date to YYYY-MM-DD for the input[type=date] field
           expDateInput.value = dateObj.toISOString().split('T')[0];
         } catch (e) {
-          expDateInput.value = '';
+          expDateInput.value = ''; // Clear if date is invalid
         }
       } else {
-        expDateInput.value = '';
+        expDateInput.value = ''; // Clear if the found lot has no EXP date (N/A)
       }
     }
   } else if (typeValue === 'รับเข้า') {
+      // Clear the date field when switching back to "Receive"
       expDateInput.value = '';
   }
 }
@@ -120,6 +113,7 @@ document.getElementById('stockForm').addEventListener('submit', async (e) => {
     const result = await callApi('recordTransaction', formData);
     alert(result.message);
     document.getElementById('stockForm').reset();
+    // Refresh summary data cache after a transaction
     stockSummary = await callApi('getStockSummaryData'); 
   } catch (error) {
     alert('เกิดข้อผิดพลาด: ' + error.message);
@@ -128,19 +122,18 @@ document.getElementById('stockForm').addEventListener('submit', async (e) => {
   }
 });
 
-// ** THE FIX IS HERE **
-// This rewritten 'load' function is more robust.
 window.addEventListener('load', async () => {
   try {
-    // Step 1: Load the essential product list first.
-    const products = await callApi('getProducts');
+    // Fetch both products and stock summary on page load
+    const [products, summary] = await Promise.all([
+      callApi('getProducts'),
+      callApi('getStockSummaryData')
+    ]);
+    productList = products;
+    stockSummary = summary; // Cache the summary data
     populateProducts(products);
-
-    // Step 2: Then, load the stock summary data and cache it.
-    stockSummary = await callApi('getStockSummaryData');
-
   } catch (error) {
     console.error('Failed to load initial data:', error);
-    alert('ไม่สามารถโหลดข้อมูลเริ่มต้นได้: ' + error.message);
+    alert('ไม่สามารถโหลดข้อมูลเริ่มต้นได้');
   }
 });
